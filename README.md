@@ -17,7 +17,7 @@ And then use command `solve formula_name`, where solve is command and formula_na
 In some cases you might want define default formula like this:
 
 ```yaml
-buildAndRun:
+default:
     solve build && solve run
 
 build: stack build --fast
