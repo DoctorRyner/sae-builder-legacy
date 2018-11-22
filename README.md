@@ -17,6 +17,7 @@ And then use command `solve formula_name`, where solve is command and formula_na
 In some cases you might want define default formula like this:
 
 ```yaml
+# build and run
 default:
     solve build && solve run
 
