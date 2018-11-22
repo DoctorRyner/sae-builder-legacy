@@ -1,0 +1,9 @@
+default: solve sayHello
+
+sayHello: echo "Hello!"
+
+build: stack build --fast
+
+run: solve
+
+install: mv /Users/local/tmp/sae/.stack-work/install/x86_64-osx/lts-12.19/8.4.4/bin/solve /Users/local/.local/bin
