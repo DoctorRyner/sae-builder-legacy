@@ -1,6 +1,6 @@
 # sae (Solver of All Equations)
 
-This is easy building tool. It aims to be like `make` but more powerful (in future) and with additional haskell sugar
+This is easy building tool. It aims to be like `make` but more powerful (in future) and with additional Haskell sugar
 
 # How to use?
 
