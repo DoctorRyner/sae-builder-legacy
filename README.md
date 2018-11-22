@@ -12,7 +12,7 @@ build: stack build --fast
 run: my-awesome-app-exe # yes, it uses stack exec by default, maybe I should remove that feature?
 ```
 
-And then use command `solve formula_name`, where solve is command and formula_name is formula (Maybe I shoud rename it to sae command?) <br />
+And then use command `solve formula_name`, where solve is command and formula_name is formula (Maybe I shoud rename command from solve to sae?) <br />
 
 In some cases you might want define default formula like this:
 
