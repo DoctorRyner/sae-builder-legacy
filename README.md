@@ -18,8 +18,7 @@ In some cases you might want to define default formula like this:
 
 ```yaml
 # build and run
-default:
-    solve build && solve run
+default: solve build && solve run
 
 build: stack build --fast
 
