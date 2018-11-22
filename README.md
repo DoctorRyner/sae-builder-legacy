@@ -4,7 +4,7 @@ This is easy building tool. It aims to be like `make` but more powerful (in futu
 
 # How to use?
 
-Just create Equations.yaml file and define your formulas (scripts) like that:
+Just create `Equations.yaml` file and define your formulas (scripts) like that:
 
 ```yaml
 build: stack build --fast
