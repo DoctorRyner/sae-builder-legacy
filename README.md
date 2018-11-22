@@ -1,6 +1,6 @@
 # sae (Solver of All Equations)
 
-This is easy building tool. It aims to be like `make` for see but more powerful (in future) and with additional haskell sugar
+This is easy building tool. It aims to be like `make` but more powerful (in future) and with additional haskell sugar
 
 # How to use?
 
@@ -11,6 +11,8 @@ build: stack build --fast
 
 run: my-awesome-app-exe # yes, it uses stack exec by default, maybe I should remove that feature?
 ```
+
+And then use command 'solve formula_name', where solve is command and formula_name is formula (Maybe I shoud rename it to sae command?) <br />
 
 In some cases you might want define default formula like this:
 
