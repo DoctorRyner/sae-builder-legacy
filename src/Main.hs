@@ -4,17 +4,17 @@
 module Main where
 
 import Data.Yaml
-import Impure (maybeReadFile, cmdify)
+import Impure (maybeReadFileBS, cmdify)
 import qualified Data 
 import System.Environment
-import Data.ByteString.Char8 (pack)
+import Data.ByteString.Char8 (ByteString)
 import qualified Data.Text as Text
 import qualified Data.HashMap.Strict as M
 
-solve :: String -> String -> IO ()
+solve :: ByteString -> String -> IO ()
 solve equations formula = do
-    let equationsContent = decodeEither' $ pack equations
- 
+    let equationsContent = decodeEither' equations
+
     case equationsContent of
         Right (Object equationsHash) -> do
             let maybeCmdValue = M.lookup (Text.pack formula) equationsHash
@@ -29,7 +29,7 @@ solve equations formula = do
 
 main :: IO ()
 main = do
-    maybeEquations <- maybeReadFile Data.fileToSolve
+    maybeEquations <- maybeReadFileBS Data.fileToSolve
     args <- getArgs
 
     case maybeEquations of

@@ -7,8 +7,8 @@ import qualified Data.ByteString.Char8 as BS
 import Data.ByteString.Char8 (ByteString)
 import qualified Data
 
-maybeReadFile :: FilePath -> IO (Maybe String)
-maybeReadFile path = (try $ readFile path :: IO (Either SomeException String)) >>= \res -> return $ rightToMaybe res
+-- maybeReadFile :: FilePath -> IO (Maybe String)
+-- maybeReadFile path = (try $ readFile path :: IO (Either SomeException String)) >>= \res -> return $ rightToMaybe res
 
 maybeReadFileBS :: FilePath -> IO (Maybe ByteString)
 maybeReadFileBS path =
