@@ -14,6 +14,9 @@ import Data.ByteString.Char8 (ByteString)
 import qualified Data.Text as Text
 import qualified Data.HashMap.Strict as M
 
+-- solve :: String -> IO ()
+-- solve formula 
+
 -- execs one formula (task) from equations (file)
 solve :: ByteString -> String -> IO ()
 solve equations formula = do
@@ -25,13 +28,17 @@ solve equations formula = do
         Right (Object equationsHash) -> do
             -- maybe gets value from key (fromula) from HashMap
             let maybeCmdValue = M.lookup (Text.pack formula) equationsHash
+                -- testa = Value 
 
             case maybeCmdValue of
                 -- just executes plain command if got 
-                Just (String cmd) -> callCommand $ Text.unpack cmd
+                Just (String cmd) -> case cmd of
+                    "default" ->
+                        callCommand $ Text.unpack cmd
+                    _ -> callCommand $ Text.unpack cmd
                 -- error if could find such a formula in file
                 Nothing -> putStrLn $ "There is no such a formula as '" ++ formula ++ "'"
- 
+
         -- if yaml structured wrong
         Right (_) -> putStrLn "Warning! While parcing yaml file I didn't got HashMap"
 

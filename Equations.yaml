@@ -1,11 +1,11 @@
 # build consts
-# let:
-# - appExecutableName: solve
-# - devBuildOptions: --fast --test
-# - productionBuildOptions: --no-test
+let:
+- appExecutableName: solve
+- devBuildOptions: --fast --test
+- productionBuildOptions: --no-test
 
 # exec if no args provided, it MUST be formula (task) name
-default: solve buildAndRun
+default: solve sayHello
 
 # just executes plain command without parcing
 sayHello: echo "Hello!"
