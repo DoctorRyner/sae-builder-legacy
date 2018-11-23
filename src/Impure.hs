@@ -13,6 +13,3 @@ import qualified Data
 maybeReadFileBS :: FilePath -> IO (Maybe ByteString)
 maybeReadFileBS path =
     (try $ BS.readFile path :: IO (Either SomeException ByteString)) >>= \res -> return $ rightToMaybe res
-
-cmdify :: String -> IO ()
-cmdify = callCommand
