@@ -30,3 +30,4 @@ run: my-awesome-app-exe # yes, it uses stack exec by default
 - [ ] multiple arguments
 - [ ] async formulas execution
 - [ ] constants support
+- [ ] manage system dependencies (unlikely)
