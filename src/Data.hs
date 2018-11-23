@@ -11,6 +11,3 @@ fileToSolveError = "There is no " ++ fileToSolve
 
 defaultEquation :: String
 defaultEquation = "default"
-
-cmdPrefix :: String
-cmdPrefix = "stack exec "

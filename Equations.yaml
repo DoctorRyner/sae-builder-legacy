@@ -1,9 +1,27 @@
-default: solve sayHello
+# build consts
+# let:
+# - appExecutableName: solve
+# - devBuildOptions: --fast --test
+# - productionBuildOptions: --no-test
 
+# exec if no args provided, it MUST be formula (task) name
+default: solve buildAndRun
+
+# just executes plain command without parcing
 sayHello: echo "Hello!"
 
+# this executes first array element as a command if this elemnt is't equal ""
+# and then takes list of tasks to run afterwards
+buildAndRun: solve build && solve sayHello
+
+# moreover if you use array you'll be able to use advanced argument parcing and use your consts
 build: stack build --fast
 
-run: solve
+# executes first argument as a command and then executes file fomulas (tasks)
+production: stack build
 
-install: mv /Users/local/tmp/sae/.stack-work/install/x86_64-osx/lts-12.19/8.4.4/bin/solve /Users/local/.local/bin
+run: stack exec solve
+
+install: cp .stack-work/install/x86_64-osx/lts-12.19/8.4.4/bin/solve /Users/local/.local/bin
+
+

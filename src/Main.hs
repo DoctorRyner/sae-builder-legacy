@@ -14,7 +14,7 @@ import qualified Data.HashMap.Strict as M
 solve :: String -> String -> IO ()
 solve equations formula = do
     let equationsContent = decodeEither' $ pack equations
-
+ 
     case equationsContent of
         Right (Object equationsHash) -> do
             let maybeCmdValue = M.lookup (Text.pack formula) equationsHash
@@ -22,6 +22,8 @@ solve equations formula = do
             case maybeCmdValue of
                 Just (String cmd) -> cmdify $ Text.unpack cmd
                 Nothing -> putStrLn $ "There is no such a formula as '" ++ formula ++ "'"
+ 
+        Right (_) -> putStrLn "Warning! While parcing yaml file I didn't got HashMap"
 
         Left _ -> return ()
 
