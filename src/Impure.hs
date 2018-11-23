@@ -1,3 +1,4 @@
+-- module for impure utility functions
 module Impure where
 
 import Control.Exception (try, SomeException)
@@ -10,6 +11,7 @@ import qualified Data
 -- maybeReadFile :: FilePath -> IO (Maybe String)
 -- maybeReadFile path = (try $ readFile path :: IO (Either SomeException String)) >>= \res -> return $ rightToMaybe res
 
+-- maybe reading file from specified path
 maybeReadFileBS :: FilePath -> IO (Maybe ByteString)
 maybeReadFileBS path =
     (try $ BS.readFile path :: IO (Either SomeException ByteString)) >>= \res -> return $ rightToMaybe res
