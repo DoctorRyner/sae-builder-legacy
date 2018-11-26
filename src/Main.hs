@@ -15,6 +15,7 @@ import Control.Concurrent.Async
 import qualified Data.Text as Text
 import qualified Data.HashMap.Strict as M
 
+-- returns either list of solved formulas, either problem formula name
 solveAll :: Object -> [String] -> (Maybe String, [String])
 solveAll equationsHash gottenFormulas = solve gottenFormulas []
   where 
@@ -29,25 +30,6 @@ solveAll equationsHash gottenFormulas = solve gottenFormulas []
                 Just (String solvedFormula) -> solve (tail formulas) $ solvedFormulas ++ [ Text.unpack solvedFormula ]
                 Nothing                     -> (Just $ Text.unpack headFormula, [])
         | otherwise = (Nothing, solvedFormulas)
- 
---     case formula of
---     _ -> case maybeCmdValue of
---         Just (String cmd) -> callCommand $ Text.unpack cmd
---         Nothing -> putStrLn $ Data.formulaNameError ++ " '" ++ formula ++ "'"
-
---   where maybeCmdValue = M.lookup (Text.pack formula) equationsHash
-
--- execs one formula (task) from equations (file)
--- solveOne :: Object -> String -> IO ()
--- solveOne equationsHash formula = case formula of
---     "help"   -> putStrLn Data.help
---     "--help" -> putStrLn Data.help
-
---     _ -> case maybeCmdValue of
---         Just (String cmd) -> callCommand $ Text.unpack cmd
---         Nothing -> putStrLn $ Data.formulaNameError ++ " '" ++ formula ++ "'"
-
---   where maybeCmdValue = M.lookup (Text.pack formula) equationsHash
  
 -- decode and parsing .yaml file
 yamlParse :: ByteString -> [String] -> Bool -> IO ()
@@ -69,7 +51,7 @@ yamlParse equations formulas isAsync = do
         Left _ -> putStrLn Data.yamlIncorrectStructureError
 
 main :: IO ()
-main = do
+main = do 
     -- maybe read file with name placed at Data.fileToSolve (probably it's Equations.yaml)
     -- as a ByteString and call it maybeEquations
     -- afterwards takes build tool arguments
