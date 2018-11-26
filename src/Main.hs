@@ -27,7 +27,7 @@ solveAll equationsHash gottenFormulas = solve gottenFormulas []
             case maybeCmdValue of
                 -- to do all types, not just string value
                 Just (String cmd) -> solve (tail formulas) $ solvedFormulas ++ [ Text.unpack cmd ]
-                Nothing           -> (Just $ "There is no formula named " ++ Text.unpack headFormula, [])
+                Nothing           -> (Just $ Text.unpack headFormula, [])
         | otherwise = (Nothing, solvedFormulas)
  
 --     case formula of
@@ -60,7 +60,7 @@ yamlParse equations formulas = do
  
             case maybeSolvedFormulas of
                 (Nothing, solvedFormulas) ->
-                    mapM_ (callCommand) solvedFormulas
+                    mapM_ callCommand solvedFormulas
                     -- async
                     -- mapConcurrently_ (callCommand) solvedFormulas
 
