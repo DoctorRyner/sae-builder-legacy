@@ -15,8 +15,19 @@ fileToSolveError = "There is no " ++ fileToSolve
 
 -- error if formula cannot be found
 formulaNameError :: String
-formulaNameError = "There is no such a formula as"
+formulaNameError = "There is no such a formula as "
 
 -- specifies name for default task formula label
 defaultEquation :: String
 defaultEquation = "default"
+
+-- yaml file pares error (should be HashMap)
+yamlParseError :: String
+yamlParseError = "Error! While parcing yaml file I didn't get HashMap"
+
+yamlIncorrectStructureError :: String
+yamlIncorrectStructureError = "Error! YAML file isn't correct and may have errors"
+
+-- help msg
+help :: String
+help = "github.com/DoctorRyner/sae"

@@ -10,6 +10,7 @@ dependencies:
 - text
 - unordered-containers
 - process
+- async
 
 executables:
   solve:

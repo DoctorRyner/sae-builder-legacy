@@ -26,7 +26,6 @@ run: my-awesome-app-exe # yes, it uses stack exec by default
 ```
 
 # TODO
-- [ ] default arguments straight execution
 - [ ] multiple arguments
 - [ ] async formulas execution
 - [ ] constants support
