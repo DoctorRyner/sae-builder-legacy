@@ -5,7 +5,7 @@ let:
 - productionBuildOptions: --no-test
 
 # exec if no args provided, it MUST be formula (task) name
-default: solve build && solve install
+default: solve build install
 
 # just executes plain command without parcing
 sayHello: echo "Hello!"

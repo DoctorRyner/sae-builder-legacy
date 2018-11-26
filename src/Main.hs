@@ -29,7 +29,7 @@ solveAll equationsHash gottenFormulas = solve gottenFormulas []
                 Just (String cmd) -> solve (tail formulas) $ solvedFormulas ++ [ Text.unpack cmd ]
                 Nothing           -> (Just $ "There is no formula named " ++ Text.unpack headFormula, [])
         | otherwise = (Nothing, solvedFormulas)
-
+ 
 --     case formula of
 --     _ -> case maybeCmdValue of
 --         Just (String cmd) -> callCommand $ Text.unpack cmd
@@ -57,14 +57,14 @@ yamlParse equations formulas = do
     case equationsContent of
         Right (Object equationsHash) -> do
             let maybeSolvedFormulas = solveAll equationsHash formulas
-
+ 
             case maybeSolvedFormulas of
                 (Nothing, solvedFormulas) ->
-                    concurrently_ (putStrLn "")
-                        (foldr (\callCmd allCalls -> allCalls >>= callCmd) (return ()) $
-                            map (\solvedFormula -> \_ -> callCommand solvedFormula) solvedFormulas)
+                    mapM_ (callCommand) solvedFormulas
+                    -- async
+                    -- mapConcurrently_ (callCommand) solvedFormulas
 
-                (Just errorText, _) -> putStrLn $ Data.formulaNameError ++ errorText
+                (Just unknownFormulaName, _) -> putStrLn $ Data.formulaNameError ++ unknownFormulaName
 
         Right (_) -> putStrLn Data.yamlParseError
 
@@ -91,5 +91,5 @@ main = do
                 '!' -> putStrLn "kek"
                 _   -> yamlParse equations args
                     -- putStrLn Data.argsError
-
+ 
         Nothing -> putStrLn Data.fileToSolveError

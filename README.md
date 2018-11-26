@@ -22,11 +22,11 @@ default: solve build && solve run
 
 build: stack build --fast
 
-run: my-awesome-app-exe # yes, it uses stack exec by default
+run: stack exec my-awesome-app-exe
 ```
 
 # TODO
-- [ ] multiple arguments
+- [x] multiple arguments
 - [ ] async formulas execution
 - [ ] constants support
 - [ ] manage system dependencies (unlikely)
