@@ -18,15 +18,28 @@ In some cases you might want to define default formula like this:
 
 ```yaml
 # build and run
-default: sae build && sae run
+default: sae build run
 
 build: stack build --fast
 
 run: stack exec my-awesome-app-exe
 ```
 
+So, as you see, you can run multiple task one to another like:
+
+```yaml
+default: sae build run
+```
+Or even asynchronously like:
+
+```yaml
+default: sae --async build run # but I don't recomend to run app before building completion :)
+```
+
 # TODO
 - [x] multiple arguments
 - [x] async formulas execution
 - [ ] constants support
+- [ ] --check option which checks .yaml's file correctness
+- [ ] config options like to check yaml file before running or not to check
 - [ ] manage system dependencies (unlikely)

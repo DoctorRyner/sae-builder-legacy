@@ -13,16 +13,17 @@ sayKek: echo "kek)"
 
 # this executes first array element as a command if this elemnt is't equal ""
 # and then takes list of tasks to run afterwards
-buildAndRun: sae build && sae sayHello
+buildAndRun: sae build run
 
 # moreover if you use array you'll be able to use advanced argument parcing and use your consts
-build: [ stack build @devBuildOptions@ @(devBuildOptions) ]
+build:
+- stack build @devBuildOptions?
 
 # executes first argument as a command and then executes file fomulas (tasks)
-production: stack build && sae install
+production: stack build install
 
 run: stack exec sae
 
-install: cp .stack-work/install/x86_64-osx/lts-12.19/8.4.4/bin/sae /Users/local/.local/bin
+install: cp .stack-work/install/x86_64-osx/lts-12.19/8.4.4/bin/@appExecutableName? /Users/local/.local/bin
 
 
