@@ -33,7 +33,7 @@ default: sae build run
 Or even asynchronously like:
 
 ```yaml
-default: sae --async build run # but I don't recomend to run app before building completion :)
+default: sae --async build run # but I don't recommend to run app before building completion :)
 ```
 
 # TODO
