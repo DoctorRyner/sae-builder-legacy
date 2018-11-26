@@ -21,13 +21,13 @@ solveAll equationsHash gottenFormulas = solve gottenFormulas []
     solve :: [String] -> [String] -> (Maybe String, [String])
     solve formulas solvedFormulas
         | length formulas > 0 = do
-            let headFormula   = Text.pack $ head formulas
-                maybeCmdValue = M.lookup headFormula equationsHash
+            let headFormula        = Text.pack $ head formulas
+                maybeSolvedFormula = M.lookup headFormula equationsHash
 
-            case maybeCmdValue of
+            case maybeSolvedFormula of
                 -- to do all types, not just string value
-                Just (String cmd) -> solve (tail formulas) $ solvedFormulas ++ [ Text.unpack cmd ]
-                Nothing           -> (Just $ Text.unpack headFormula, [])
+                Just (String solvedFormula) -> solve (tail formulas) $ solvedFormulas ++ [ Text.unpack solvedFormula ]
+                Nothing                     -> (Just $ Text.unpack headFormula, [])
         | otherwise = (Nothing, solvedFormulas)
  
 --     case formula of
@@ -50,8 +50,8 @@ solveAll equationsHash gottenFormulas = solve gottenFormulas []
 --   where maybeCmdValue = M.lookup (Text.pack formula) equationsHash
  
 -- decode and parsing .yaml file
-yamlParse :: ByteString -> [String] -> IO ()
-yamlParse equations formulas = do
+yamlParse :: ByteString -> [String] -> Bool -> IO ()
+yamlParse equations formulas isAsync = do
     let equationsContent = decodeEither' equations
  
     case equationsContent of
@@ -60,18 +60,13 @@ yamlParse equations formulas = do
  
             case maybeSolvedFormulas of
                 (Nothing, solvedFormulas) ->
-                    mapM_ callCommand solvedFormulas
-                    -- async
-                    -- mapConcurrently_ (callCommand) solvedFormulas
+                    (if isAsync then mapConcurrently_ else mapM_) callCommand solvedFormulas
 
                 (Just unknownFormulaName, _) -> putStrLn $ Data.formulaNameError ++ unknownFormulaName
 
         Right (_) -> putStrLn Data.yamlParseError
 
         Left _ -> putStrLn Data.yamlIncorrectStructureError
-
-
-
 
 main :: IO ()
 main = do
@@ -84,12 +79,15 @@ main = do
     case maybeEquations of
         Just equations -> case length args of
             -- if no arguments provided then exeutes default formula (task)
-            0 -> yamlParse equations [ Data.defaultEquation ]
+            0 -> yamlParse equations [ Data.defaultEquation ] False
             -- if only 1 argument provided then executes this formula in case if it exests
-            1 -> yamlParse equations [ head args ]
-            _ -> case head $ head args of
-                '!' -> putStrLn "kek"
-                _   -> yamlParse equations args
+            1 -> case head args of
+                "--async" -> putStrLn Data.asyncKeyError
+                "--help"  -> putStrLn Data.help
+                _         -> yamlParse equations [ head args ] False
+            _ -> case head args of
+                "--async" -> yamlParse equations (tail args) True
+                _         -> yamlParse equations args False
                     -- putStrLn Data.argsError
- 
+
         Nothing -> putStrLn Data.fileToSolveError

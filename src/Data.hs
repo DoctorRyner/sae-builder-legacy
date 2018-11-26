@@ -1,6 +1,9 @@
 -- module for containing pure information
 module Data where
 
+appName :: String
+appName = "sae"
+
 -- default file name which contain formulas
 fileToSolve :: String
 fileToSolve = "Equations.yaml"
@@ -30,4 +33,8 @@ yamlIncorrectStructureError = "Error! YAML file isn't correct and may have error
 
 -- help msg
 help :: String
-help = "github.com/DoctorRyner/sae"
+help = "https://github.com/DoctorRyner/sae"
+
+-- async key error
+asyncKeyError :: String
+asyncKeyError = "Try to execute " ++ appName ++ " help"

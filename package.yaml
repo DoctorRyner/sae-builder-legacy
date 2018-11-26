@@ -13,7 +13,7 @@ dependencies:
 - async
 
 executables:
-  solve:
+  sae:
     main:                Main.hs
     source-dirs:         src
     ghc-options:
