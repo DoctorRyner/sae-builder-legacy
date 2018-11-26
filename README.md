@@ -30,7 +30,7 @@ So, as you can see, you can run multiple tasks one after another like:
 ```yaml
 default: sae build run
 ```
-Or even asynchronously like:
+Or even asynchronously:
 
 ```yaml
 default: sae --async build run # but I don't recommend to run app before building completion :)
