@@ -1,8 +1,3 @@
-{-# LANGUAGE DeriveGeneric #-}
-{-# LANGUAGE OverloadedStrings #-}
-
--- build tool with additional haskell support
-
 module Main where
 
 import Data.Yaml
