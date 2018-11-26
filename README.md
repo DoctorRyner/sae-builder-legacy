@@ -25,7 +25,7 @@ build: stack build --fast
 run: stack exec my-awesome-app-exe
 ```
 
-So, as you see, you can run multiple task one to another like:
+So, as you can see, you can run multiple tasks one to another like:
 
 ```yaml
 default: sae build run
