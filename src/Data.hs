@@ -34,3 +34,12 @@ help = "https://github.com/DoctorRyner/sae"
 -- async key error
 asyncKeyError :: String
 asyncKeyError = "Try to execute " ++ appName ++ " help"
+
+wrongFormulaTypeError :: String
+wrongFormulaTypeError = " has wrong type, must be String"
+
+letsStructureError :: String
+letsStructureError = "let structure is incorrect, consts mush be String HashMap"
+
+constTypeError :: String
+constTypeError = " const must be String"

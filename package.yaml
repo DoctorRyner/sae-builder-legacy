@@ -9,6 +9,9 @@ dependencies:
 - unordered-containers
 - process
 - async
+- regex-compat
+- regex-pcre
+- vector
 
 executables:
   sae:
