@@ -30,10 +30,10 @@ solveAll equationsHash gottenFormulas = solve gottenFormulas []
                 _                           -> (Just $ Text.unpack headFormula ++ Data.wrongFormulaTypeError, [])
         | otherwise = (Nothing, solvedFormulas)
 
-resolveLets :: Array -> (Maybe String, [String])
-resolveLets gottenLets = resolve gottenLets []
+resolveLets :: Array -> (Maybe String, HashMap.HashMap Text.Text String)
+resolveLets gottenLets = resolve gottenLets HashMap.empty
   where
-    resolve :: Array -> [String] -> (Maybe String, [String])
+    resolve :: Array -> HashMap.HashMap Text.Text String -> (Maybe String, HashMap.HashMap Text.Text String)
     resolve lets resolvedLets
         | length lets > 0 = do
             let headLet = Vector.head lets
@@ -43,12 +43,13 @@ resolveLets gottenLets = resolve gottenLets []
                     if length list == 1
                         then case head list of
                             (key, value) -> case value of
-                                String str -> resolve (Vector.tail lets) $ resolvedLets ++ [ Text.unpack str ]
-                                _ -> (Just $ Text.unpack key ++ Data.constTypeError, [])
+                                String str -> resolve (Vector.tail lets) $
+                                    HashMap.insert key (Text.unpack str) resolvedLets
+                                _ -> (Just $ Text.unpack key ++ Data.constTypeError, HashMap.empty)
 
-                        else (Just Data.letsStructureError, [])
+                        else (Just Data.letsStructureError, HashMap.empty)
 
-                _          -> (Just Data.letsStructureError, [])
+                _ -> (Just Data.letsStructureError, HashMap.empty)
             -- resolve 
         | otherwise = (Nothing, resolvedLets)
 
@@ -67,8 +68,9 @@ yamlParse equations formulas isAsync = do
                     Array letsArray -> do
                         let maybeResolvedLets = resolveLets letsArray
                         case maybeResolvedLets of
-                            (Nothing, resolvedLets) ->
-                                putStrLn $ foldr (\curr output -> output ++ curr ++ "\n") "" resolvedLets
+                            (Nothing, resolvedLets) -> do
+                                let testa = HashMap.lookup (Text.pack "devBuildOptions") resolvedLets
+                                putStrLn "реализовать запуск задач с чтением пременных"
 
                             (Just errorText, _) -> putStrLn errorText
 
