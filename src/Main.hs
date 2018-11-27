@@ -65,6 +65,5 @@ main = do
             _ -> case head args of
                 "--async" -> yamlParse equations (tail args) True
                 _         -> yamlParse equations args False
-                    -- putStrLn Data.argsError
 
         Nothing -> putStrLn Data.fileToSolveError

@@ -8,10 +8,6 @@ appName = "sae"
 fileToSolve :: String
 fileToSolve = "Equations.yaml"
 
--- error if use provided more than 1 argument
-argsError :: String
-argsError = "Please, specify just one equation"
-
 -- error if can't find @fileToSolve
 fileToSolveError :: String
 fileToSolveError = "There is no " ++ fileToSolve
