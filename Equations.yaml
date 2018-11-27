@@ -9,7 +9,7 @@ default: sae build install
 
 # just executes plain command without parcing
 sayHello: echo "Hello!"
-sayKek: echo "kek)"
+sayKek: echo "kek)" @productionBuilOptions?
 
 # this executes first array element as a command if this elemnt is't equal ""
 # and then takes list of tasks to run afterwards

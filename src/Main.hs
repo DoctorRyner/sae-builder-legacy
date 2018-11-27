@@ -11,7 +11,7 @@ import System.Environment (getArgs)
 import Data.ByteString.Char8 (ByteString)
 import Control.Concurrent.Async (mapConcurrently_)
 import Impure (maybeReadFileBS)
--- import Regex.Parser (replace)
+import Regex.Parser (replace)
 
 -- returns either list of solved formulas, either problem formula name
 solveAll :: Object -> [String] -> (Maybe String, [String])
@@ -69,8 +69,19 @@ yamlParse equations formulas isAsync = do
                         let maybeResolvedLets = resolveLets letsArray
                         case maybeResolvedLets of
                             (Nothing, resolvedLets) -> do
-                                let testa = HashMap.lookup (Text.pack "devBuildOptions") resolvedLets
-                                putStrLn "реализовать запуск задач с чтением пременных"
+                                let letNames = HashMap.keys resolvedLets
+                                case maybeSolvedFormulas of
+                                    (Nothing, solvedFormulas) -> do
+                                        let firstLet = Text.unpack $ head letNames
+                                        let solvedFormulasLetParsed = map (\formula -> replace ("@" ++ firstLet ++ "\\?") formula $ case HashMap.lookup (Text.pack firstLet) resolvedLets of
+                                                Just str -> str
+                                                _ -> "error!") solvedFormulas
+
+                                        (if isAsync
+                                            then mapConcurrently_
+                                            else mapM_)           callCommand solvedFormulasLetParsed
+                                    (Just unknownFormulaName, _) -> putStrLn $
+                                        Data.formulaNameError ++ unknownFormulaName
 
                             (Just errorText, _) -> putStrLn errorText
 
