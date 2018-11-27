@@ -16,11 +16,11 @@ sayKek: echo "kek)"
 buildAndRun: sae build run
 
 # moreover if you use array you'll be able to use advanced argument parcing and use your consts
-build: ls
+build: stack build --fast
 # - stack build @devBuildOptions?
 
 # executes first argument as a command and then executes file fomulas (tasks)
-production: stack build && sae install
+production: stack build +RTS -K100M && sae install
 
 run: stack exec sae
 

@@ -3,12 +3,12 @@ module Main where
 import Data.Yaml
 import Impure (maybeReadFileBS)
 import System.Process (callCommand)
-import qualified Data 
+import qualified Data
 import System.Environment
 import Data.ByteString.Char8 (ByteString)
 import Control.Concurrent.Async
 import qualified Data.Text as Text
-import qualified Data.HashMap.Strict s M
+import qualified Data.HashMap.Strict as M
 
 -- returns either list of solved formulas, either problem formula name
 solveAll :: Object -> [String] -> (Maybe String, [String])
