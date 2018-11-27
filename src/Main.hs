@@ -1,14 +1,14 @@
 module Main where
 
-import Data.Yaml
-import Impure (maybeReadFileBS)
-import System.Process (callCommand)
 import qualified Data
-import System.Environment
-import Data.ByteString.Char8 (ByteString)
-import Control.Concurrent.Async
 import qualified Data.Text as Text
 import qualified Data.HashMap.Strict as M
+import Data.Yaml (Object, Value(..), decodeEither')
+import System.Process (callCommand)
+import System.Environment (getArgs)
+import Data.ByteString.Char8 (ByteString)
+import Control.Concurrent.Async (mapConcurrently_)
+import Impure (maybeReadFileBS)
 
 -- returns either list of solved formulas, either problem formula name
 solveAll :: Object -> [String] -> (Maybe String, [String])
