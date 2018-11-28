@@ -53,6 +53,15 @@ resolveLets gottenLets = resolve gottenLets HashMap.empty
             -- resolve 
         | otherwise = (Nothing, resolvedLets)
 
+replaceLets :: [Text.Text] -> String -> HashMap.HashMap Text.Text String -> String
+replaceLets letNames formula lets = foldr
+    (\letName out -> do
+        let maybeFormulaValue = HashMap.lookup (Text.pack letName) lets
+        case maybeFormulaValue of
+            Just parsedFormula -> replace ("@" ++ letName ++ "\\?") out parsedFormula
+            Nothing            -> "ERROR"
+    ) formula $ map Text.unpack letNames
+
 -- decode and parsing .yaml file
 yamlParse :: ByteString -> [String] -> Bool -> IO ()
 yamlParse equations formulas isAsync = do
@@ -72,10 +81,7 @@ yamlParse equations formulas isAsync = do
                                 let letNames = HashMap.keys resolvedLets
                                 case maybeSolvedFormulas of
                                     (Nothing, solvedFormulas) -> do
-                                        let firstLet = Text.unpack $ head letNames
-                                        let solvedFormulasLetParsed = map (\formula -> replace ("@" ++ firstLet ++ "\\?") formula $ case HashMap.lookup (Text.pack firstLet) resolvedLets of
-                                                Just str -> str
-                                                _ -> "error!") solvedFormulas
+                                        let solvedFormulasLetParsed = map (\formula -> replaceLets letNames formula resolvedLets) solvedFormulas
 
                                         (if isAsync
                                             then mapConcurrently_
@@ -98,7 +104,7 @@ yamlParse equations formulas isAsync = do
         Left _ -> putStrLn Data.yamlIncorrectStructureError
 
 main :: IO ()
-main = do 
+main = do
     -- maybe read file with name placed at Data.fileToSolve (probably it's Equations.yaml)
     -- as a ByteString and call it maybeEquations
     -- afterwards takes build tool arguments

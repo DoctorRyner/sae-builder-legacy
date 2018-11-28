@@ -39,7 +39,8 @@ default: sae --async build run # but I don't recommend to run app before buildin
 # TODO
 - [x] multiple arguments
 - [x] async formulas execution
-- [ ] constants support
+- [x] constants support
+- [ ] constants validation checking
 - [ ] custom haskell code insertion with defined constants support
 - [ ] --check option which checks .yaml's file correctness
 - [ ] config options like to check yaml file before running or not to check
