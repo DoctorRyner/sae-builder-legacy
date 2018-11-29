@@ -50,12 +50,13 @@ devBuild: stack build @devBuildOptions?
 run: stack exec @appExecutableName?
 ```
 
+let must be list of key-string values like `constName: testValue`, otherwise it will show you error
+
 # TODO
 - [x] multiple arguments
 - [x] async formulas execution
 - [x] constants support
-- [ ] constants validation checking
+- [x] constants validation checking
 - [ ] custom haskell code insertion with defined constants support
-- [ ] --check option which checks .yaml's file correctness
-- [ ] config options like to check yaml file before running or not to check
+- [ ] config options like `let` field but for options
 - [ ] manage system dependencies (unlikely)
