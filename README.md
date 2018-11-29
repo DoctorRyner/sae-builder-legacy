@@ -43,7 +43,7 @@ You can use predefined constants like these:
 ```yaml
 let:
 - appExecutableName: sae
-- devBuildOptions: --fast
+- devBuildOptions: --fast --no-test
 
 default: sae devBuild run
 
