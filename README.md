@@ -36,6 +36,20 @@ Or even asynchronously:
 default: sae --async build run # but I don't recommend to run app before building completion :)
 ```
 
+You can use predefined constants like these:
+
+```yaml
+let:
+- appExecutableName: sae
+- devBuildOptions: --fast
+
+default: sae devBuild
+
+devBuild: stack build @devBuildOptions?
+
+run: stack exec @appExecutableName?
+```
+
 # TODO
 - [x] multiple arguments
 - [x] async formulas execution

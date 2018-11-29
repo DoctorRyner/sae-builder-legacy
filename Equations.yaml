@@ -3,12 +3,15 @@ let:
 - appExecutableName: sae
 - devBuildOptions: --fast
 - productionBuildOptions: --no-test
+- testPhrase: just test
 
 # exec if no args provided, it MUST be formula (task) name
 default: sae build install
 
 # just executes plain command without parcing
 sayHello: echo "Hello!"
+
+test: echo "it's @testPhrse?"
 
 # this executes first array element as a command if this elemnt is't equal ""
 # and then takes list of tasks to run afterwards
