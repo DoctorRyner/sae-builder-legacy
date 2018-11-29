@@ -4,7 +4,7 @@ This is easy building tool. It aims to be like `make` but more powerful (in futu
 
 # How to build?
 
-Just clone this repo `git clone https://github.com/DoctorRyner/sae`, enter it `cd sae`, run `stack setup && stack build` (you must have stack installed, if it is not than follow that https://docs.haskellstack.org/en/stable/README/), next place compiled executable somewhere like `/usr/local/bin` (if you use Unit-like OS). Thats it, just type `sae --help` or read `How to use?` section
+Just clone this repo `git clone https://github.com/DoctorRyner/sae`, enter it `cd sae`, run `stack setup && stack build` (you must have stack installed, if it is not than follow that https://docs.haskellstack.org/en/stable/README/), next place compiled executable (executable named `sae` and you can determine where it placed from stack build command, just look up for something like `installing executable...`) somewhere like `/usr/local/bin` (if you use Unit-like OS). Thats it, just type `sae --help` or read `How to use?` section
 
 # How to use?
 
@@ -16,9 +16,7 @@ build: stack build --fast
 run: stack exec my-awesome-app-exe
 ```
 
-And then use command `sae formula_name`, where `sae` is command and `formula_name` is formula. How to build and install? Just clone this repo, enter it and type `stack build` then copy `sae` executable placing of which you can determine from stack build prompt, to something like `/usr/local/bin` if you use `Unix-like OS` to have access to this tool from everywhere
-
-In some cases you might want to define default formula like this:
+And then use command `sae formula_name`, where `sae` is command and `formula_name` is formula. In some cases you might want to define default formula like this:
 
 ```yaml
 # build and run
