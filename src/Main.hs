@@ -10,7 +10,7 @@ import System.Process (callCommand)
 import System.Environment (getArgs)
 import Data.ByteString.Char8 (ByteString)
 import Control.Concurrent.Async (mapConcurrently_)
-import Impure (maybeReadFileBS)
+import Impure (maybeReadFileBS, exitIfCmdIsNotValid)
 import Regex.Parser (replace)
 
 -- returns either list of solved formulas, either problem formula name
@@ -50,7 +50,6 @@ resolveLets gottenLets = resolve gottenLets HashMap.empty
                         else (Just Data.letsStructureError, HashMap.empty)
 
                 _ -> (Just Data.letsStructureError, HashMap.empty)
-            -- resolve 
         | otherwise = (Nothing, resolvedLets)
 
 replaceLets :: [Text.Text] -> String -> HashMap.HashMap Text.Text String -> String
@@ -85,7 +84,7 @@ yamlParse equations formulas isAsync = do
 
                                         (if isAsync
                                             then mapConcurrently_
-                                            else mapM_)           callCommand solvedFormulasLetParsed
+                                            else mapM_)           exitIfCmdIsNotValid solvedFormulasLetParsed
                                     (Just unknownFormulaName, _) -> putStrLn $
                                         Data.formulaNameError ++ unknownFormulaName
 
@@ -95,8 +94,8 @@ yamlParse equations formulas isAsync = do
  
                 Nothing   -> case maybeSolvedFormulas of
                     (Nothing, solvedFormulas) ->
-                        (if isAsync then mapConcurrently_ else mapM_) callCommand solvedFormulas
-    
+                        (if isAsync then mapConcurrently_ else mapM_) exitIfCmdIsNotValid solvedFormulas
+
                     (Just unknownFormulaName, _) -> putStrLn $ Data.formulaNameError ++ unknownFormulaName
 
         Right (_) -> putStrLn Data.yamlParseError
