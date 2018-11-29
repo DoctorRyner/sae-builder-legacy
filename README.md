@@ -2,6 +2,10 @@
 
 This is easy building tool. It aims to be like `make` but more powerful (in future) and with additional Haskell sugar
 
+# How to build?
+
+Just run stack setup && stack build, then place compiled executable somewhere like `/usr/local/bin` (if you use Unit-like OS), don't forget to reopen your terminal or update your shell like `source ~/.zshrc` or `source ~/.bashrc`
+
 # How to use?
 
 Just create `Equations.yaml` file and define your formulas (scripts) like that:
