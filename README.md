@@ -4,7 +4,7 @@ This is easy building tool. It aims to be like `make` but more powerful (in futu
 
 # How to build?
 
-Just clone this repo `git clone https://github.com/DoctorRyner/sae`, enter it `cd sae`, run `stack setup && stack build` (you must have stack installed, if it not than follow that https://docs.haskellstack.org/en/stable/README/), next place compiled executable somewhere like `/usr/local/bin` (if you use Unit-like OS), don't forget to reopen your terminal or update your shell like `source ~/.zshrc` or `source ~/.bashrc`
+Just clone this repo `git clone https://github.com/DoctorRyner/sae`, enter it `cd sae`, run `stack setup && stack build` (you must have stack installed, if it is not than follow that https://docs.haskellstack.org/en/stable/README/), next place compiled executable somewhere like `/usr/local/bin` (if you use Unit-like OS)
 
 # How to use?
 
