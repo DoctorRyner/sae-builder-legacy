@@ -52,7 +52,7 @@ devBuild: stack build @devBuildOptions?
 run: stack exec @appExecutableName?
 ```
 
-let must be list of key-string values like `constName: testValue`, otherwise it will show you error
+let must be list of key-string values like `constName: testValue`, otherwise it will show you an error
 
 # TODO
 - [x] multiple arguments
