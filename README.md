@@ -45,7 +45,7 @@ let:
 - appExecutableName: sae
 - devBuildOptions: --fast
 
-default: sae devBuild
+default: sae devBuild run
 
 devBuild: stack build @devBuildOptions?
 
