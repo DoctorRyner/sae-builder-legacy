@@ -6,7 +6,6 @@ import qualified Data.HashMap.Strict as HashMap
 import Data.Yaml (Object, Value(..), decodeEither')
 import Data.Yaml.Aeson (Array)
 import qualified Data.Vector as Vector
-import System.Process (callCommand)
 import System.Environment (getArgs)
 import Data.ByteString.Char8 (ByteString)
 import Control.Concurrent.Async (mapConcurrently_)
@@ -20,7 +19,7 @@ solveAll equationsHash gottenFormulas = solve gottenFormulas []
     solve :: [String] -> [String] -> (Maybe String, [String])
     solve formulas solvedFormulas
         | length formulas > 0 = do
-            let headFormula        = Text.pack $ head formulas
+            let headFormula        = Text.pack $ head formulas 
                 maybeSolvedFormula = HashMap.lookup headFormula equationsHash
 
             case maybeSolvedFormula of

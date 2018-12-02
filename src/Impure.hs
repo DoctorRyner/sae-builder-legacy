@@ -17,3 +17,6 @@ exitIfCmdIsNotValid text = (try $ callCommand text :: IO (Either SomeException (
         case res of
             Right cmd -> return cmd
             Left  _   -> exitFailure
+
+test :: String -> IO ()
+test = callCommand

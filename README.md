@@ -58,7 +58,8 @@ let must be list of key-string values like `constName: testValue`, otherwise it 
 - [x] multiple arguments
 - [x] async formulas execution
 - [x] constants support
-- [x] constants validation checking
+- [x] constants validation checking (in definition)
+- [ ] inplace constants validation checking
 - [ ] custom haskell code insertion with defined constants support
 - [ ] config options like `let` field but for options
 - [ ] manage system dependencies (unlikely)
