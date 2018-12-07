@@ -14,26 +14,21 @@ import Impure (maybeFileBS, exitIfCmdIsNotValid)
 import Regex.Parser (replace)
 import System.Exit (die)
 
--- returns either list of solved formulas, either problem formula name
-solveAll :: Object -> [String] -> (Maybe String, [String])
-solveAll equationsHash gottenFormulas = solve gottenFormulas []
-  where 
-    solve :: [String] -> [String] -> (Maybe String, [String])
+solveAll :: Object -> [String] -> Either String [String]
+solveAll equationsHash gottenFormulas = solve gottenFormulas [] where
+    solve :: [String] -> [String] -> Either String [String]
     solve formulas solvedFormulas
-        | length formulas > 0 = do
+        | length formulas > 0 =
             let headFormula        = Text.pack $ head formulas 
                 maybeSolvedFormula = HashMap.lookup headFormula equationsHash
-
-            case maybeSolvedFormula of
-                -- to do all types, not just string value
+            in case maybeSolvedFormula of
                 Just (String solvedFormula) -> solve (tail formulas) $ solvedFormulas ++ [ Text.unpack solvedFormula ]
-                Nothing                     -> (Just $ Text.unpack headFormula, [])
-                _                           -> (Just $ Text.unpack headFormula ++ Data.wrongFormulaTypeError, [])
-        | otherwise = (Nothing, solvedFormulas)
+                Nothing                     -> Left $ Text.unpack headFormula
+                _                           -> Left $ Text.unpack headFormula ++ Data.wrongFormulaTypeError
+        | otherwise = Right solvedFormulas
 
 resolveLets :: Array -> (Maybe String, HashMap.HashMap Text.Text String)
-resolveLets gottenLets = resolve gottenLets HashMap.empty
-  where
+resolveLets gottenLets = resolve gottenLets HashMap.empty where
     resolve :: Array -> HashMap.HashMap Text.Text String -> (Maybe String, HashMap.HashMap Text.Text String)
     resolve lets resolvedLets
         | length lets > 0 = do
@@ -76,14 +71,13 @@ yamlParse equations formulas isAsync = case equationsContent of
                         (Nothing, resolvedLets) ->
                             let letNames = HashMap.keys resolvedLets
                             in case maybeSolvedFormulas of
-                                (Nothing, solvedFormulas) ->
+                                Right solvedFormulas ->
                                     let solvedFormulasLetParsed = map (\formula -> replaceLets letNames formula resolvedLets) solvedFormulas
 
                                     in (if isAsync
                                         then mapConcurrently_
                                         else mapM_)           exitIfCmdIsNotValid solvedFormulasLetParsed
-                                (Just unknownFormulaName, _) -> die $
-                                    Data.formulaNameError ++ unknownFormulaName
+                                Left unknownFormulaName -> die $ Data.formulaNameError ++ unknownFormulaName
 
                         (Just errorText, _) -> die errorText
 
