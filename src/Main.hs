@@ -2,8 +2,10 @@ module Main where
 
 import qualified Data
 import qualified Data.Text as Text
-import qualified Data.HashMap.Strict as HashMap
+import Data.Text (Text, pack, unpack)
 import qualified Data.Vector as Vector
+import qualified Data.HashMap.Strict as HashMap
+import Data.HashMap.Strict (HashMap)
 import Data.Yaml (Object, Value(..), decodeEither')
 import Data.Yaml.Aeson (Array)
 import Data.Maybe (fromMaybe, fromJust)
@@ -19,56 +21,55 @@ solveAll equationsHash gottenFormulas = solve gottenFormulas [] where
     solve :: [String] -> [String] -> Either String [String]
     solve formulas solvedFormulas
         | length formulas > 0 =
-            let headFormula        = Text.pack $ head formulas 
+            let headFormula        = pack $ head formulas 
                 maybeSolvedFormula = HashMap.lookup headFormula equationsHash
             in case maybeSolvedFormula of
-                Just (String solvedFormula) -> solve (tail formulas) $ solvedFormulas ++ [ Text.unpack solvedFormula ]
-                Nothing                     -> Left $ Text.unpack headFormula
-                _                           -> Left $ Text.unpack headFormula ++ Data.wrongFormulaTypeError
+                Just (String solvedFormula) -> solve (tail formulas) $ solvedFormulas ++ [ unpack solvedFormula ]
+                Nothing                     -> Left $ unpack headFormula
+                _                           -> Left $ unpack headFormula ++ Data.wrongFormulaTypeError
         | otherwise = Right solvedFormulas
 
-resolveLets :: Array -> (Maybe String, HashMap.HashMap Text.Text String)
+resolveLets :: Array -> Either String (HashMap Text String)
 resolveLets gottenLets = resolve gottenLets HashMap.empty where
-    resolve :: Array -> HashMap.HashMap Text.Text String -> (Maybe String, HashMap.HashMap Text.Text String)
+    resolve :: Array -> HashMap Text String -> Either String (HashMap Text String)
     resolve lets resolvedLets
-        | length lets > 0 = do
-            let headLet = Vector.head lets
-            case headLet of
-                Object val -> do
-                    let list = HashMap.toList val
-                    if length list == 1
-                        then case head list of
-                            (key, value) -> case value of
-                                String str -> resolve (Vector.tail lets) $
-                                    HashMap.insert key (Text.unpack str) resolvedLets
-                                _ -> (Just $ Text.unpack key ++ Data.constTypeError, HashMap.empty)
+        | length lets > 0 = case Vector.head lets of
+            Object val ->
+                let list = HashMap.toList val in
+                if length list == 1 then case head list of
+                    (key, value) -> case value of
+                        String str -> resolve (Vector.tail lets) $
+                            HashMap.insert key (unpack str) resolvedLets
 
-                        else (Just Data.letsStructureError, HashMap.empty)
+                        _ -> Left $ unpack key ++ Data.constTypeError
 
-                _ -> (Just Data.letsStructureError, HashMap.empty)
-        | otherwise = (Nothing, resolvedLets)
+                else Left Data.letsStructureError
 
-replaceLets :: [Text.Text] -> String -> HashMap.HashMap Text.Text String -> String
+            _ -> Left Data.letsStructureError
+
+        | otherwise = Right resolvedLets
+
+replaceLets :: [Text] -> String -> HashMap Text String -> String
 replaceLets letNames formula lets = foldr
     (\letName out -> do
-        let maybeFormulaValue = HashMap.lookup (Text.pack letName) lets
+        let maybeFormulaValue = HashMap.lookup (pack letName) lets
         case maybeFormulaValue of
             Just parsedFormula -> replace ("@" ++ letName ++ "\\?") out parsedFormula
             Nothing            -> "ERROR"
-    ) formula $ map Text.unpack letNames
+    ) formula $ map unpack letNames
 
 -- decode and parsing .yaml file
 yamlParse :: ByteString -> [String] -> Bool -> IO ()
 yamlParse equations formulas isAsync = case equationsContent of 
     Right (Object equationsHash) ->
-        let maybeLets           = HashMap.lookup (Text.pack "let") equationsHash
+        let maybeLets           = HashMap.lookup (pack "let") equationsHash
             maybeSolvedFormulas = solveAll equationsHash formulas
         in case maybeLets of
             Just lets -> case lets of
                 Array letsArray ->
                     let maybeResolvedLets = resolveLets letsArray
                     in case maybeResolvedLets of
-                        (Nothing, resolvedLets) ->
+                        Right resolvedLets ->
                             let letNames = HashMap.keys resolvedLets
                             in case maybeSolvedFormulas of
                                 Right solvedFormulas ->
@@ -79,15 +80,15 @@ yamlParse equations formulas isAsync = case equationsContent of
                                         else mapM_)           exitIfCmdIsNotValid solvedFormulasLetParsed
                                 Left unknownFormulaName -> die $ Data.formulaNameError ++ unknownFormulaName
 
-                        (Just errorText, _) -> die errorText
+                        Left errorText -> die errorText
 
                 _ -> die Data.letsStructureError
 
             Nothing   -> case maybeSolvedFormulas of
-                (Nothing, solvedFormulas) ->
+                Right solvedFormulas ->
                     (if isAsync then mapConcurrently_ else mapM_) exitIfCmdIsNotValid solvedFormulas
 
-                (Just unknownFormulaName, _) -> die $ Data.formulaNameError ++ unknownFormulaName
+                Left unknownFormulaName -> die $ Data.formulaNameError ++ unknownFormulaName
 
     Right (_) -> die Data.yamlParseError
 
