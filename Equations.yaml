@@ -2,11 +2,11 @@ let:
 - appExecutableName: sae
 - devBuildOptions: --fast
 - productionBuildOptions: --no-test
-- divOS: osx
+- devOS: osx
 
 default: sae build install
 
-test: echo "Пример -! @appExecutableName?рлуаырылароыва"
+test: echo "Пример -! @divOS?рл@divOS?уаырылароыва"
 
 buildAndRun: sae build run
 

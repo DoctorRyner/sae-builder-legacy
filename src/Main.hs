@@ -1,7 +1,6 @@
 module Main where
 
 import qualified Data
-import qualified Data.Text as Text
 import Data.Text (Text, pack, unpack)
 import qualified Data.Vector as Vector
 import qualified Data.HashMap.Strict as HashMap
@@ -51,12 +50,15 @@ resolveLets gottenLets = resolve gottenLets HashMap.empty where
 
 replaceLets :: [Text] -> String -> HashMap Text String -> String
 replaceLets letNames formula lets = foldr
-    (\letName out -> do
+    (\letName out ->
         let maybeFormulaValue = HashMap.lookup (pack letName) lets
-        case maybeFormulaValue of
+        in case maybeFormulaValue of
             Just parsedFormula -> replace ("@" ++ letName ++ "\\?") out parsedFormula
             Nothing            -> "ERROR"
     ) formula $ map unpack letNames
+
+runCommands :: Bool -> [String] -> IO ()
+runCommands isAsync = (if isAsync then mapConcurrently_ else mapM_) exitIfCmdIsNotValid
 
 -- decode and parsing .yaml file
 yamlParse :: ByteString -> [String] -> Bool -> IO ()
@@ -64,31 +66,25 @@ yamlParse equations formulas isAsync = case equationsContent of
     Right (Object equationsHash) ->
         let maybeLets           = HashMap.lookup (pack "let") equationsHash
             maybeSolvedFormulas = solveAll equationsHash formulas
-        in case maybeLets of
-            Just lets -> case lets of
-                Array letsArray ->
-                    let maybeResolvedLets = resolveLets letsArray
-                    in case maybeResolvedLets of
+        in case maybeSolvedFormulas of
+            Right solvedFormulas -> case maybeLets of
+                Just lets -> case lets of
+                    Array letsArray -> case resolveLets letsArray of
                         Right resolvedLets ->
                             let letNames = HashMap.keys resolvedLets
-                            in case maybeSolvedFormulas of
-                                Right solvedFormulas ->
-                                    let solvedFormulasLetParsed = map (\formula -> replaceLets letNames formula resolvedLets) solvedFormulas
-
-                                    in (if isAsync
-                                        then mapConcurrently_
-                                        else mapM_)           exitIfCmdIsNotValid solvedFormulasLetParsed
-                                Left unknownFormulaName -> die $ Data.formulaNameError ++ unknownFormulaName
+                            -- in runCommands
+                            --     isAsync $ map (\formula -> replaceLets letNames formula resolvedLets) solvedFormulas
+                            in runCommands
+                                isAsync $
+                                map (\formula -> replaceLets letNames formula resolvedLets) solvedFormulas
 
                         Left errorText -> die errorText
 
-                _ -> die Data.letsStructureError
+                    _ -> die Data.letsStructureError
 
-            Nothing   -> case maybeSolvedFormulas of
-                Right solvedFormulas ->
-                    (if isAsync then mapConcurrently_ else mapM_) exitIfCmdIsNotValid solvedFormulas
+                Nothing   -> runCommands isAsync solvedFormulas
 
-                Left unknownFormulaName -> die $ Data.formulaNameError ++ unknownFormulaName
+            Left unknownFormulaName -> die $ Data.formulaNameError ++ unknownFormulaName
 
     Right (_) -> die Data.yamlParseError
 
