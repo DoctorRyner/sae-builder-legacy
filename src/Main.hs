@@ -3,9 +3,10 @@ module Main where
 import qualified Data
 import qualified Data.Text as Text
 import qualified Data.HashMap.Strict as HashMap
+import qualified Data.Vector as Vector
 import Data.Yaml (Object, Value(..), decodeEither')
 import Data.Yaml.Aeson (Array)
-import qualified Data.Vector as Vector
+import Data.Maybe (fromMaybe, fromJust)
 import System.Environment (getArgs)
 import Data.ByteString.Char8 (ByteString)
 import Control.Concurrent.Async (mapConcurrently_)
@@ -104,24 +105,17 @@ yamlParse equations formulas isAsync = do
 
 main :: IO ()
 main = do
-    -- maybe read file with name placed at Data.fileToSolve (probably it's Equations.yaml)
-    -- as a ByteString and call it maybeEquations
-    -- afterwards takes build tool arguments
     maybeEquations <- maybeReadFileBS Data.fileToSolve
     args           <- getArgs
 
-    case maybeEquations of
-        Just equations ->
-            case length args of
-                -- if no arguments provided then exeutes default formula (task)
-                0 -> yamlParse equations [ Data.defaultEquation ] False
-                -- if only 1 argument provided then executes this formula in case if it exests
-                1 -> case head args of
-                    "--async" -> putStrLn Data.asyncKeyError
-                    "--help"  -> putStrLn Data.help
-                    _         -> yamlParse equations [ head args ] False
-                _ -> case head args of
-                    "--async" -> yamlParse equations (tail args) True
-                    _         -> yamlParse equations args False
+    fromMaybe (die Data.fileToSolveError) $ Just $ let equations = fromJust maybeEquations in case length args of
+        0 -> yamlParse equations [ Data.defaultEquation ] False
 
-        Nothing -> die Data.fileToSolveError
+        1 -> case head args of
+            "--async" -> putStrLn Data.asyncKeyError
+            "--help"  -> putStrLn Data.help
+            _         -> yamlParse equations [ head args ] False
+
+        _ -> case head args of
+            "--async" -> yamlParse equations (tail args) True
+            _         -> yamlParse equations args False
