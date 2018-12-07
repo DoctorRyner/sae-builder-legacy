@@ -2,6 +2,7 @@ let:
 - appExecutableName: sae
 - devBuildOptions: --fast
 - productionBuildOptions: --no-test
+- divOS: osx
 
 default: sae build install
 
@@ -15,6 +16,6 @@ production: stack build && sae install
 
 run: stack exec @appExecutableName?
 
-install: cp .stack-work/install/x86_64-osx/lts-12.19/8.4.4/bin/@appExecutableName? /Users/local/.local/bin
+install: cp .stack-work/install/x86_64-@devOS?/lts-12.19/8.4.4/bin/@appExecutableName? ~/.local/bin
 
 
