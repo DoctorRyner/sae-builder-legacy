@@ -10,7 +10,7 @@ import Data.Maybe (fromMaybe, fromJust)
 import System.Environment (getArgs)
 import Data.ByteString.Char8 (ByteString)
 import Control.Concurrent.Async (mapConcurrently_)
-import Impure (maybeReadFileBS, exitIfCmdIsNotValid)
+import Impure (maybeFileBS, exitIfCmdIsNotValid)
 import Regex.Parser (replace)
 import System.Exit (die)
 
@@ -64,56 +64,56 @@ replaceLets letNames formula lets = foldr
 
 -- decode and parsing .yaml file
 yamlParse :: ByteString -> [String] -> Bool -> IO ()
-yamlParse equations formulas isAsync = do
-    let equationsContent = decodeEither' equations
+yamlParse equations formulas isAsync = case equationsContent of 
+    Right (Object equationsHash) ->
+        let maybeLets           = HashMap.lookup (Text.pack "let") equationsHash
+            maybeSolvedFormulas = solveAll equationsHash formulas
+        in case maybeLets of
+            Just lets -> case lets of
+                Array letsArray ->
+                    let maybeResolvedLets = resolveLets letsArray
+                    in case maybeResolvedLets of
+                        (Nothing, resolvedLets) ->
+                            let letNames = HashMap.keys resolvedLets
+                            in case maybeSolvedFormulas of
+                                (Nothing, solvedFormulas) ->
+                                    let solvedFormulasLetParsed = map (\formula -> replaceLets letNames formula resolvedLets) solvedFormulas
 
-    case equationsContent of 
-        Right (Object equationsHash) -> do
-            let maybeLets           = HashMap.lookup (Text.pack "let") equationsHash
-            let maybeSolvedFormulas = solveAll equationsHash formulas
+                                    in (if isAsync
+                                        then mapConcurrently_
+                                        else mapM_)           exitIfCmdIsNotValid solvedFormulasLetParsed
+                                (Just unknownFormulaName, _) -> die $
+                                    Data.formulaNameError ++ unknownFormulaName
 
-            case maybeLets of
-                Just lets -> case lets of
-                    Array letsArray -> do
-                        let maybeResolvedLets = resolveLets letsArray
-                        case maybeResolvedLets of
-                            (Nothing, resolvedLets) -> do
-                                let letNames = HashMap.keys resolvedLets
-                                case maybeSolvedFormulas of
-                                    (Nothing, solvedFormulas) -> do
-                                        let solvedFormulasLetParsed = map (\formula -> replaceLets letNames formula resolvedLets) solvedFormulas
+                        (Just errorText, _) -> die errorText
 
-                                        (if isAsync
-                                            then mapConcurrently_
-                                            else mapM_)           exitIfCmdIsNotValid solvedFormulasLetParsed
-                                    (Just unknownFormulaName, _) -> putStrLn $
-                                        Data.formulaNameError ++ unknownFormulaName
+                _ -> die Data.letsStructureError
 
-                            (Just errorText, _) -> putStrLn errorText
+            Nothing   -> case maybeSolvedFormulas of
+                (Nothing, solvedFormulas) ->
+                    (if isAsync then mapConcurrently_ else mapM_) exitIfCmdIsNotValid solvedFormulas
 
-                    _ -> putStrLn Data.letsStructureError
- 
-                Nothing   -> case maybeSolvedFormulas of
-                    (Nothing, solvedFormulas) ->
-                        (if isAsync then mapConcurrently_ else mapM_) exitIfCmdIsNotValid solvedFormulas
+                (Just unknownFormulaName, _) -> die $ Data.formulaNameError ++ unknownFormulaName
 
-                    (Just unknownFormulaName, _) -> putStrLn $ Data.formulaNameError ++ unknownFormulaName
+    Right (_) -> die Data.yamlParseError
 
-        Right (_) -> putStrLn Data.yamlParseError
+    Left _ -> die Data.yamlIncorrectStructureError
 
-        Left _ -> putStrLn Data.yamlIncorrectStructureError
+  where equationsContent = decodeEither' equations
+
+analyzeCommand :: ByteString -> [String] -> IO ()
+analyzeCommand equations args = case length args of
+    0 -> yamlParse equations [ Data.defaultEquation ] False
+
+    1 -> case head args of
+        "--async" -> die Data.asyncKeyError
+        "--help"  -> putStrLn Data.help
+        _         -> yamlParse equations [ head args ] False
+
+    _ -> case head args of
+        "--async" -> yamlParse equations (tail args) True
+        _         -> yamlParse equations args False
 
 main :: IO ()
-main = maybeReadFileBS Data.fileToSolve >>= \maybeEquations -> getArgs >>= \args ->
-
-    fromMaybe (die Data.fileToSolveError) $ Just $ let equations = fromJust maybeEquations in case length args of
-        0 -> yamlParse equations [ Data.defaultEquation ] False
-
-        1 -> case head args of
-            "--async" -> putStrLn Data.asyncKeyError
-            "--help"  -> putStrLn Data.help
-            _         -> yamlParse equations [ head args ] False
-
-        _ -> case head args of
-            "--async" -> yamlParse equations (tail args) True
-            _         -> yamlParse equations args False
+main = maybeFileBS Data.fileToSolve >>= \file -> getArgs >>= \args ->
+    fromMaybe (die Data.fileToSolveError) $ Just $ analyzeCommand (fromJust file) args
