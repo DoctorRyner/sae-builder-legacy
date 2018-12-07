@@ -11,6 +11,7 @@ import Data.ByteString.Char8 (ByteString)
 import Control.Concurrent.Async (mapConcurrently_)
 import Impure (maybeReadFileBS, exitIfCmdIsNotValid)
 import Regex.Parser (replace)
+import System.Exit (die)
 
 -- returns either list of solved formulas, either problem formula name
 solveAll :: Object -> [String] -> (Maybe String, [String])
@@ -123,4 +124,4 @@ main = do
                     "--async" -> yamlParse equations (tail args) True
                     _         -> yamlParse equations args False
 
-        Nothing -> putStrLn Data.fileToSolveError
+        Nothing -> die Data.fileToSolveError
