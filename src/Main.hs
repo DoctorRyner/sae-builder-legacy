@@ -104,9 +104,7 @@ yamlParse equations formulas isAsync = do
         Left _ -> putStrLn Data.yamlIncorrectStructureError
 
 main :: IO ()
-main = do
-    maybeEquations <- maybeReadFileBS Data.fileToSolve
-    args           <- getArgs
+main = maybeReadFileBS Data.fileToSolve >>= \maybeEquations -> getArgs >>= \args ->
 
     fromMaybe (die Data.fileToSolveError) $ Just $ let equations = fromJust maybeEquations in case length args of
         0 -> yamlParse equations [ Data.defaultEquation ] False
