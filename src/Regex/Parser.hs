@@ -4,7 +4,7 @@ import Text.Regex (mkRegex, subRegex)
 import Text.Regex.TDFA ((=~))
 
 getAll :: String -> String -> [String]
-getAll expr basis = map (!!1) $ basis =~ expr :: [String]
+getAll expr basis = map last $ basis =~ expr :: [String]
 
 replace :: String -> String -> String -> String
 replace experssion textToParse = subRegex (mkRegex experssion) textToParse
