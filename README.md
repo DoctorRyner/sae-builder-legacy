@@ -63,3 +63,5 @@ let must be list of key-string values like `constName: testValue`, otherwise it 
 - [ ] custom haskell code insertion with defined constants support
 - [ ] config options like `let` field but for options
 - [ ] manage system dependencies (unlikely)
+- [ ] add conditions
+- [ ] add shell command bool evaluation
