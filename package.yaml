@@ -11,7 +11,7 @@ dependencies:
 - async
 - vector
 - regex-compat
-- regex-tdfa
+- regex-pcre-builtin
 
 executables:
   saeNew:

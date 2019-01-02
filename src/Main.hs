@@ -6,7 +6,7 @@ import qualified Error
 import qualified Data.Yaml as Yaml
 import qualified Data.Text as Text (pack, unpack)
 import Data.Text (Text)
-import qualified Data.HashMap.Strict as HashMap (lookup)
+import qualified Data.HashMap.Strict as HashMap (lookup, elems)
 import Control.Concurrent.Async (mapConcurrently_)
 -- import Data.HashMap.Strict (HashMap)
 import System.Environment (getArgs)
@@ -110,15 +110,22 @@ getScriptsContent scriptsHash givenScriptsNames = body (map Text.pack givenScrip
 runCommands :: Bool -> [String] -> IO ()
 runCommands isAsync scriptsContent = (if isAsync then mapConcurrently_ else mapM_) exitIfCmdIsNotValid scriptsContent
 
-resolveLets :: Yaml.Object -> Yaml.Array -> Maybe String
-resolveLets scriptsHash letsArray = Nothing 
+-- checkAllScriptsContent :: 
+
+resolveLets :: Yaml.Object -> Yaml.Array -> Either String [String]
+resolveLets scriptsHash letsArray = Right []
+
+  where
+    elems = HashMap.elems scriptsHash
 
 yamlResolve :: ByteString -> [String] -> Bool -> IO ()
 yamlResolve file givenScriptNames isAsync = case Yaml.decodeEither' file of
     Right (Yaml.Object scriptsHash) -> case getScriptsContent scriptsHash givenScriptNames of
         Left  err            -> die err
         Right scriptsContent -> case HashMap.lookup (Text.pack "let") scriptsHash of
-            Just (Yaml.Array letsArray)  -> putStrLn "There are lets"
+            Just (Yaml.Array letsArray) -> case resolveLets scriptsHash letsArray of
+                Left err              -> die err
+                Right scriptsWithLets -> runCommands isAsync scriptsWithLets
             Just _                       -> die Error.letsStructure
             Nothing                      -> runCommands isAsync scriptsContent
     Right _                         -> die Error.yamlParse
