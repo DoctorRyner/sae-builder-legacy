@@ -1,5 +1,5 @@
 let:
-- appExecutableName: sae
+- appExecutableName: saeNew
 - devBuildOptions: --fast
 - productionBuildOptions: --no-test
 - devOS: osx
