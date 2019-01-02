@@ -5,12 +5,12 @@ appName :: String
 appName = "sae"
 
 -- default file name which contain formulas
-fileToSolve :: String
-fileToSolve = "Equations.yaml"
+fileToRun :: String
+fileToRun = "Equations.yaml"
 
 -- specifies name for default task formula label
-defaultEquation :: String
-defaultEquation = "default"
+defaultScriptName :: String
+defaultScriptName = "default"
 
 -- help msg
 help :: String

@@ -7,10 +7,11 @@ import qualified Data.Yaml as Yaml
 import qualified Data.Text as Text (pack, unpack)
 import Data.Text (Text)
 import qualified Data.HashMap.Strict as HashMap (lookup)
-import Data.HashMap.Strict (HashMap)
+import Control.Concurrent.Async (mapConcurrently_)
+-- import Data.HashMap.Strict (HashMap)
 import System.Environment (getArgs)
 import System.Exit (die)
-import Impure (maybeFileBS)
+import Impure (maybeFileBS, exitIfCmdIsNotValid)
 import Data.ByteString.Char8 (ByteString)
 -- import qualified Data.Vector as Vector
 -- import qualified Data.HashMap.Strict as HashMap
@@ -18,7 +19,6 @@ import Data.ByteString.Char8 (ByteString)
 -- import Data.Yaml (Object, Value(..), decodeEither')
 -- import Data.Yaml.Aeson (Array)
 -- import Data.Maybe (fromJust)
--- import Control.Concurrent.Async (mapConcurrently_)
 -- import Impure (maybeFileBS, exitIfCmdIsNotValid)
 -- import Regex.Parser (replace)
 
@@ -94,44 +94,52 @@ import Data.ByteString.Char8 (ByteString)
 
 --     Left  _ -> die Error.yamlIncorrectStructure
 
-getScriptsContent :: Yaml.Object -> [String] -> Either String [Text]
-getScriptsContent scriptsHash givenScriptNames = body (map Text.pack givenScriptNames) []
+getScriptsContent :: Yaml.Object -> [String] -> Either String [String]
+getScriptsContent scriptsHash givenScriptsNames = body (map Text.pack givenScriptsNames) []
   where
-    body :: [Text] -> [Text] -> Either String [Text]
+    body :: [Text] -> [Text] -> Either String [String]
     body scriptNames scriptsContent
         | length scriptNames > 0 =
             let headScript = head scriptNames
             in case HashMap.lookup headScript scriptsHash of
                 Just (Yaml.String scriptContent) -> body (tail scriptNames) $ scriptContent : scriptsContent
-                Nothing                          -> Left $ Error.formulaName ++ Text.unpack headScript
-        | otherwise              = Right scriptsContent
+                Just _                           -> Left $ Text.unpack headScript ++ Error.scriptType
+                Nothing                          -> Left $ Error.scriptName ++ Text.unpack headScript
+        | otherwise              = Right $ map Text.unpack scriptsContent
 
-yamlParse :: ByteString -> [String] -> Bool -> IO ()
-yamlParse file givenScriptNames isAsync = case Yaml.decodeEither' file of
-    Right (Yaml.Object scriptsHash) ->
-        let maybeLets = HashMap.lookup (Text.pack "let") scriptsHash
-        in case getScriptsContent scriptsHash givenScriptNames of
-            Left err  -> die err
-            Right res -> pure ()
+runCommands :: Bool -> [String] -> IO ()
+runCommands isAsync scriptsContent = (if isAsync then mapConcurrently_ else mapM_) exitIfCmdIsNotValid scriptsContent
+
+resolveLets :: Yaml.Object -> Yaml.Array -> Maybe String
+resolveLets scriptsHash letsArray = Nothing 
+
+yamlResolve :: ByteString -> [String] -> Bool -> IO ()
+yamlResolve file givenScriptNames isAsync = case Yaml.decodeEither' file of
+    Right (Yaml.Object scriptsHash) -> case getScriptsContent scriptsHash givenScriptNames of
+        Left  err            -> die err
+        Right scriptsContent -> case HashMap.lookup (Text.pack "let") scriptsHash of
+            Just (Yaml.Array letsArray)  -> putStrLn "There are lets"
+            Just _                       -> die Error.letsStructure
+            Nothing                      -> runCommands isAsync scriptsContent
     Right _                         -> die Error.yamlParse
     Left  _                         -> die Error.yamlIncorrectStructure
 
 
 run :: ByteString -> [String] -> IO ()
 run file args = case length args of
-    0 -> yamlParse file [ Config.defaultEquation ] False
+    0 -> yamlResolve file [ Config.defaultScriptName ] False
 
     1 -> case firstArg of
         "--async" -> die Error.asyncKey
         "--help"  -> putStrLn Config.help
-        _         -> yamlParse file [ firstArg ] False
+        _         -> yamlResolve file [ firstArg ] False
 
     _ -> case firstArg of
-        "--async" -> yamlParse file (tail args) True
-        _         -> yamlParse file args False
+        "--async" -> yamlResolve file (tail args) True
+        _         -> yamlResolve file args False
 
   where firstArg = head args
 
 main :: IO ()
-main = maybeFileBS Config.fileToSolve >>= \case Just file -> run file =<< getArgs
-                                                Nothing   -> die Error.fileToSolve
+main = maybeFileBS Config.fileToRun >>= \case Just file -> run file =<< getArgs
+                                              Nothing   -> die Error.fileToRun

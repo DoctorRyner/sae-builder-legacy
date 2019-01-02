@@ -3,12 +3,12 @@ module Error where
 import qualified Config
 
 -- error if can't find @fileToSolve
-fileToSolve :: String
-fileToSolve = "There is no " ++ Config.fileToSolve
+fileToRun :: String
+fileToRun = "There is no " ++ Config.fileToRun
 
 -- error if formula cannot be found
-formulaName :: String
-formulaName = "There is no such a formula as "
+scriptName :: String
+scriptName = "There is no such a formula as "
 
 -- yaml file pares error (should be HashMap)
 yamlParse :: String
@@ -21,8 +21,8 @@ yamlIncorrectStructure = "Error! YAML file isn't correct and may have errors"
 asyncKey :: String
 asyncKey = "Try to execute " ++ Config.appName ++ " help"
 
-wrongFormulaType :: String
-wrongFormulaType = " has wrong type, must be String"
+scriptType :: String
+scriptType = " has wrong type, must be String"
 
 letsStructure :: String
 letsStructure = "let structure is incorrect, consts mush be String HashMap"
