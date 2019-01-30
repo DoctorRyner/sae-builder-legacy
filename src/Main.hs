@@ -134,7 +134,9 @@ run file args = case length args of
     1 -> case firstArg of
         "--async" -> die Error.asyncKey
         "--help"  -> putStrLn Config.help
-        "--elmInit" -> writeFile "Main.elm" =<< readFile "resources/Main.elm"
+        "--elmInit" -> do
+            writeFile "Utils.elm" =<< readFile "resources/Utils.elm"
+            writeFile "Main.elm"  =<< readFile "resources/Main.elm"
         _         -> yamlResolve file [ firstArg ] False
 
     _ -> case firstArg of
