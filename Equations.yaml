@@ -1,10 +1,13 @@
 let:
 - appExecutableName: saeNew
+- buildPath: $(stack path --local-install-root)/bin
 - devBuildOptions: --fast
 - productionBuildOptions: --no-test
 - devOS: osx
+- mda: stack path --local-install-root
 
-default: sae build install
+# default: sae build install
+default: sae test
 
 test: echo "Пример -! @divOS?рл@divOS?уаырылароыва"
 
@@ -16,6 +19,7 @@ production: stack build && sae install
 
 run: stack exec @appExecutableName?
 
-install: cp .stack-work/install/x86_64-@devOS?/lts-13.1/8.6.3/bin/@appExecutableName? ~/.local/bin
+# install: cp .stack-work/install/x86_64-@devOS?/lts-13.1/8.6.3/bin/@appExecutableName? ~/.local/bin
+install: cp @buildPath?/@appExecutableName? ~/.local/bin
 
 

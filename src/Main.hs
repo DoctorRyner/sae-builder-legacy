@@ -1,12 +1,15 @@
 {-# LANGUAGE LambdaCase #-}
+{-# LANGUAGE OverloadedStrings #-}
 module Main where
 
 import qualified Config
 import qualified Error
 import qualified Data.Yaml as Yaml
 import qualified Data.Text as Text (pack, unpack)
+-- import qualified Regex (getAll)
+-- import qualified Data.Vector (tail, head)
 import Data.Text (Text)
-import qualified Data.HashMap.Strict as HashMap (lookup, elems)
+import qualified Data.HashMap.Strict as HashMap (lookup)
 import Control.Concurrent.Async (mapConcurrently_)
 -- import Data.HashMap.Strict (HashMap)
 import System.Environment (getArgs)
@@ -95,8 +98,7 @@ import Data.ByteString.Char8 (ByteString)
 --     Left  _ -> die Error.yamlIncorrectStructure
 
 getScriptsContent :: Yaml.Object -> [String] -> Either String [String]
-getScriptsContent scriptsHash givenScriptsNames = body (map Text.pack givenScriptsNames) []
-  where
+getScriptsContent scriptsHash givenScriptsNames = body (map Text.pack givenScriptsNames) [] where
     body :: [Text] -> [Text] -> Either String [String]
     body scriptNames scriptsContent
         | length scriptNames > 0 =
@@ -110,22 +112,15 @@ getScriptsContent scriptsHash givenScriptsNames = body (map Text.pack givenScrip
 runCommands :: Bool -> [String] -> IO ()
 runCommands isAsync scriptsContent = (if isAsync then mapConcurrently_ else mapM_) exitIfCmdIsNotValid scriptsContent
 
--- checkAllScriptsContent :: 
-
-resolveLets :: Yaml.Object -> Yaml.Array -> Either String [String]
-resolveLets scriptsHash letsArray = Right []
-
-  where
-    elems = HashMap.elems scriptsHash
+resolveLets :: Yaml.Array -> [String] -> [String]
+resolveLets letsArray scriptsContent = []
 
 yamlResolve :: ByteString -> [String] -> Bool -> IO ()
 yamlResolve file givenScriptNames isAsync = case Yaml.decodeEither' file of
     Right (Yaml.Object scriptsHash) -> case getScriptsContent scriptsHash givenScriptNames of
         Left  err            -> die err
         Right scriptsContent -> case HashMap.lookup (Text.pack "let") scriptsHash of
-            Just (Yaml.Array letsArray) -> case resolveLets scriptsHash letsArray of
-                Left err              -> die err
-                Right scriptsWithLets -> runCommands isAsync scriptsWithLets
+            Just (Yaml.Array letsArray) -> runCommands isAsync $ resolveLets letsArray scriptsContent
             Just _                       -> die Error.letsStructure
             Nothing                      -> runCommands isAsync scriptsContent
     Right _                         -> die Error.yamlParse
@@ -139,6 +134,7 @@ run file args = case length args of
     1 -> case firstArg of
         "--async" -> die Error.asyncKey
         "--help"  -> putStrLn Config.help
+        "--elmInit" -> writeFile "Main.elm" =<< readFile "resources/Main.elm"
         _         -> yamlResolve file [ firstArg ] False
 
     _ -> case firstArg of
