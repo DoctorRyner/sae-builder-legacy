@@ -88,7 +88,7 @@ yamlParse equations formulas isAsync = case decodeEither' equations of
     Right _ -> die Error.yamlParse
 
     Left  _ -> die Error.yamlIncorrectStructure
- 
+
 run :: ByteString -> [String] -> IO ()
 run equations args = case length args of
     0 -> yamlParse equations [ Config.defaultEquation ] False
@@ -96,6 +96,9 @@ run equations args = case length args of
     1 -> case firstArg of
         "--async" -> die Error.asyncKey
         "--help"  -> putStrLn Config.help
+        "--elmInit" -> do
+            writeFile "Utils.elm" =<< readFile "resources/Utils.elm"
+            writeFile "Main.elm"  =<< readFile "resources/Main.elm"
         _         -> yamlParse equations [ firstArg ] False
 
     _ -> case firstArg of
@@ -103,6 +106,7 @@ run equations args = case length args of
         _         -> yamlParse equations args False
 
   where firstArg = head args
+
 
 main :: IO ()
 main = maybeFileBS Config.fileToSolve >>= \case Just file -> run file =<< getArgs
