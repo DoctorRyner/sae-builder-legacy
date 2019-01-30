@@ -107,7 +107,6 @@ run equations args = case length args of
 
   where firstArg = head args
 
-
 main :: IO ()
 main = maybeFileBS Config.fileToSolve >>= \case Just file -> run file =<< getArgs
                                                 Nothing   -> die Error.fileToSolve

@@ -1,8 +1,6 @@
 let:
 - appExecutableName: sae
 - devBuildOptions: --fast
-- productionBuildOptions: --no-test
-- devOS: osx
 
 default: sae build install
 
