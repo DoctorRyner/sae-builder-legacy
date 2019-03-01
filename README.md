@@ -47,9 +47,9 @@ let:
 
 default: sae devBuild run
 
-devBuild: stack build @devBuildOptions?
+devBuild: stack build $devBuildOptions?
 
-run: stack exec @appExecutableName?
+run: stack exec $appExecutableName?
 ```
 
 let must be list of key-string values like `constName: testValue`, otherwise it will show you an error
