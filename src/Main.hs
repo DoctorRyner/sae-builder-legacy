@@ -56,7 +56,7 @@ replaceLets letNames formula lets =
     -- let possibleLets = getAll "@([^?]*)?" formula
     -- in
     foldr
-        (\letName out -> replace ("$" ++ letName ++ "\\?") out (fromJust $ HashMap.lookup (pack letName) lets)
+        (\letName out -> replace ("%" ++ letName ++ "\\%") out (fromJust $ HashMap.lookup (pack letName) lets)
         ) formula $ map unpack letNames
 
 runCommands :: Bool -> [String] -> IO ()
