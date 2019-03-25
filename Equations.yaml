@@ -6,12 +6,12 @@ default: sae build install
 
 buildAndRun: sae build run
 
-build: stack build __devBuildOptions__
+build: stack build <devBuildOptions>
 
 production: stack build && sae install
 
-run: stack exec %appExecutableName%
+run: stack exec <appExecutableName>
 
-install: cp $(stack path --local-install-root)/bin/%appExecutableName% ~/.local/bin
+install: cp $(stack path --local-install-root)/bin/<appExecutableName> ~/.local/bin
 
 
