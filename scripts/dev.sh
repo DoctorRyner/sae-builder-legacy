@@ -1,1 +1,1 @@
-ghcid -c "stack ghci sae:exe:sae2" -r
+ghcid -c "stack ghci src/Main.hs" -r
