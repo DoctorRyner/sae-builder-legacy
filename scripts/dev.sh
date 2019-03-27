@@ -1,0 +1,1 @@
+ghcid -c "stack ghci sae:exe:sae2" -r

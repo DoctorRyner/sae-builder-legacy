@@ -1,25 +1,35 @@
 name:                sae
 version:             0.1
 
+extra-source-files:
+- README.md
+
+description:         Please see the README on GitHub at <https://github.com/githubuser/sae#readme>
+
 dependencies:
 - base >= 4.7 && < 5
-- yaml
-- bytestring
-- text
-- unordered-containers
-- process
-- async
-- vector
-- regex-compat
-- regex-tdfa
+
+library:
+  source-dirs: src
 
 executables:
-  sae:
+  sae2:
     main:                Main.hs
     source-dirs:         src
     ghc-options:
     - -threaded
     - -rtsopts
     - -with-rtsopts=-N
-    - -Wall
-    - -Werror
+    dependencies:
+    - sae
+
+tests:
+  sae-test:
+    main:                Main.hs
+    source-dirs:         test
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - sae
