@@ -12,6 +12,8 @@ dependencies:
 
 library:
   source-dirs: src
+  ghc-options:
+    - -F -pgmF=record-dot-preprocessor
 
 executables:
   sae2:
