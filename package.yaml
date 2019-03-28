@@ -8,6 +8,7 @@ description:         Please see the README on GitHub at <https://github.com/gith
 
 dependencies:
 - base >= 4.7 && < 5
+- lens
 
 library:
   source-dirs: src
@@ -20,6 +21,8 @@ executables:
     - -threaded
     - -rtsopts
     - -with-rtsopts=-N
+    - -Wall
+    - -F -pgmF=record-dot-preprocessor
     dependencies:
     - sae
 
