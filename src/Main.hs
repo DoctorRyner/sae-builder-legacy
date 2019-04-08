@@ -10,9 +10,9 @@ import qualified ArgParser
 parseYaml :: String -> IO ()
 parseYaml file = pure ()
 
-optionsProcessor :: ArgParser.Options -> IO ()
-optionsProcessor options =
-         if options.help    then putStrLn locale.helpMsg
+optionsProcessor :: (ArgParser.Options, [String]) -> IO ()
+optionsProcessor (options, taskNames) =
+         if options.help    then putStrLn ArgParser.howToUse
     else if options.version then putStrLn $ locale.version ++ config.version
     else case options.file of
         Just file -> putStrLn file
@@ -27,8 +27,6 @@ optionsProcessor options =
             else                       putStrLn ArgParser.howToUse
 
 main :: IO ()
-main = do
-    args <- ArgParser.parse ["b"]
-    case args of
-        Right options -> optionsProcessor options
-        Left err      -> putStrLn err
+main = ArgParser.parse [ "sdf" ] >>= \case
+    Right options -> optionsProcessor options
+    Left  err     -> putStrLn err

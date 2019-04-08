@@ -28,9 +28,8 @@ options =
         (OptArg ((\ filePath opts -> opts { file = filePath }) ) "FILE") "source FILE"
     ]
 
-parse :: [String] -> IO (Either String Options)
+parse :: [String] -> IO (Either String (Options, [String]))
 parse argv = case getOpt Permute options argv of
-    (o, n, []  ) -> do
-        putStrLn $ concat n
-        pure . Right $ foldl (flip id) defaultOptions o
-    (_, _, errs) -> pure . Left  $ concat errs ++ howToUse
+    (o, taskNames, []  ) ->
+        pure . Right $ (foldl (flip id) (defaultOptions { help = length o == 0 }) o, taskNames)
+    (_, _, errs) -> pure . Left  $ concat errs ++ (replicate 49 '=' ++ "\n") ++ howToUse

@@ -14,7 +14,9 @@ dependencies:
 library:
   source-dirs: src
   ghc-options:
-    - -F -pgmF=record-dot-preprocessor
+  - -F -pgmF=record-dot-preprocessor
+  default-extensions:
+  - LambdaCase
 
 executables:
   sae2:
@@ -28,6 +30,8 @@ executables:
     - -F -pgmF=record-dot-preprocessor
     dependencies:
     - sae
+    default-extensions:
+    - LambdaCase
 
 tests:
   sae-test:
