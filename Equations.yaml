@@ -1,17 +1,5 @@
-let:
-- appExecutableName: sae
-- devBuildOptions: --fast
-
 default: sae build install
 
-buildAndRun: sae build run
+build: stack build
 
-build: stack build <devBuildOptions>
-
-production: stack build && sae install
-
-run: stack exec <appExecutableName>
-
-install: cp $(stack path --local-install-root)/bin/<appExecutableName> ~/.local/bin
-
-
+install: stack build && sudo cp $(stack path --local-install-root)/bin/sae /usr/local/bin

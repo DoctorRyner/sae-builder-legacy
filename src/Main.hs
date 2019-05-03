@@ -96,9 +96,6 @@ run equations args = case length args of
     1 -> case firstArg of
         "--async" -> die Error.asyncKey
         "--help"  -> putStrLn Config.help
-        "--elmInit" -> do
-            writeFile "Utils.elm" =<< readFile "resources/Utils.elm"
-            writeFile "Main.elm"  =<< readFile "resources/Main.elm"
         _         -> yamlParse equations [ firstArg ] False
 
     _ -> case firstArg of
