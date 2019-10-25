@@ -2,7 +2,11 @@
 
 This is easy building tool. It aims to be like `make` but more powerful (in future) and with additional Haskell sugar
 
-# How to build?
+# How to install?
+
+Download it from https://github.com/DoctorRyner/sae/releases
+
+# How to build (manual installation)?
 
 Just clone this repo `git clone https://github.com/DoctorRyner/sae`, enter it `cd sae`, run `stack setup && stack build` (you must have stack installed, if it is not than follow that https://docs.haskellstack.org/en/stable/README/), next place compiled executable (executable named `sae` and you can determine where it placed from `stack build` command, just look up for something like `Installing executable...`) somewhere like `/usr/local/bin` (if you use Unit-like OS). Thats it, just type `sae --help` or read `How to use?` section
 
