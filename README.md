@@ -4,7 +4,7 @@ This is easy building tool. It aims to be like `make` but more powerful (in futu
 
 # How to install?
 
-Download it from https://github.com/DoctorRyner/sae/releases
+Download it from https://github.com/DoctorRyner/sae/releases and put it somewhere in your $PATH (like /usr/local/bin for *nix)
 
 # How to build (manual installation)?
 
