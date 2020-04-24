@@ -4,26 +4,12 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: b34f8e79ce651b1359a2a58da43f1dca5be54a22c505402f0b8cc4d788c7ac1d
+-- hash: ab1fea6df3611e33a071facf0aee90fd055ad031926f99eca74126e7870a1178
 
 name:           sae
-version:        0.1.0.0
-description:    Please see the README on GitHub at <https://github.com/githubuser/sae#readme>
-homepage:       https://github.com/githubuser/sae#readme
-bug-reports:    https://github.com/githubuser/sae/issues
-author:         Author name here
-maintainer:     example@example.com
-copyright:      2020 Author name here
-license:        BSD3
-license-file:   LICENSE
+version:        0.3
+description:    Please see the README on GitHub at <https://github.com/DoctorRyner/sae>
 build-type:     Simple
-extra-source-files:
-    README.md
-    ChangeLog.md
-
-source-repository head
-  type: git
-  location: https://github.com/githubuser/sae
 
 library
   exposed-modules:
@@ -32,8 +18,11 @@ library
       Paths_sae
   hs-source-dirs:
       src
+  default-extensions: OverloadedStrings LambdaCase DeriveGeneric DuplicateRecordFields OverloadedLabels OverloadedStrings LambdaCase DataKinds TypeOperators
+  ghc-options: -Wall -Werror=incomplete-patterns
   build-depends:
       base >=4.7 && <5
+    , generic-lens
   default-language: Haskell2010
 
 executable sae-exe
@@ -42,21 +31,10 @@ executable sae-exe
       Paths_sae
   hs-source-dirs:
       app
-  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  default-extensions: OverloadedStrings LambdaCase DeriveGeneric DuplicateRecordFields OverloadedLabels OverloadedStrings LambdaCase DataKinds TypeOperators
+  ghc-options: -Wall -Werror=incomplete-patterns -threaded -rtsopts -with-rtsopts=-N -Werror
   build-depends:
       base >=4.7 && <5
-    , sae
-  default-language: Haskell2010
-
-test-suite sae-test
-  type: exitcode-stdio-1.0
-  main-is: Spec.hs
-  other-modules:
-      Paths_sae
-  hs-source-dirs:
-      test
-  ghc-options: -threaded -rtsopts -with-rtsopts=-N
-  build-depends:
-      base >=4.7 && <5
+    , generic-lens
     , sae
   default-language: Haskell2010
