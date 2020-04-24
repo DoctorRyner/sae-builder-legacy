@@ -1,5 +1,0 @@
-default: sae build install
-
-build: stack build
-
-install: stack build && sudo cp $(stack path --local-install-root)/bin/sae /usr/local/bin

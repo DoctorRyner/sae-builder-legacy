@@ -1,25 +1,38 @@
 name:                sae
-version:             0.1
+version:             0.3
+
+description:         Please see the README on GitHub at <https://github.com/DoctorRyner/sae>
 
 dependencies:
 - base >= 4.7 && < 5
-- yaml
-- bytestring
-- text
-- unordered-containers
-- process
-- async
-- vector
-- regex-compat
-- regex-tdfa
+- generic-lens
+
+ghc-options:
+- -Wall
+- -Werror=incomplete-patterns
+
+default-extensions:
+- OverloadedStrings
+- LambdaCase
+- DeriveGeneric
+- DuplicateRecordFields
+- OverloadedLabels
+- OverloadedStrings
+- LambdaCase
+- DataKinds
+- TypeOperators
+
+library:
+  source-dirs: src
 
 executables:
-  sae:
+  sae-exe:
     main:                Main.hs
-    source-dirs:         src
+    source-dirs:         app
     ghc-options:
     - -threaded
     - -rtsopts
     - -with-rtsopts=-N
-    - -Wall
     - -Werror
+    dependencies:
+    - sae
