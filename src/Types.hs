@@ -1,16 +1,12 @@
 module Types where
 
-data Flag
-    = Version
-    | Async
-    | File String
-    deriving Show
+import Lens
 
 data Options = Options
     { async
     , showVersion :: Bool
     , targetFile  :: FilePath
-    }
+    } deriving (Show, Generic)
 
 defaultOptions :: Options
 defaultOptions = Options

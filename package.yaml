@@ -23,6 +23,7 @@ default-extensions:
 - LambdaCase
 - DataKinds
 - TypeOperators
+- ScopedTypeVariables
 
 library:
   source-dirs: src
