@@ -7,14 +7,14 @@ data Flag
     deriving Show
 
 data Options = Options
-    { version
-    , async      :: Bool
-    , targetFile :: FilePath
+    { async
+    , showVersion :: Bool
+    , targetFile  :: FilePath
     }
 
 defaultOptions :: Options
 defaultOptions = Options
-    { version    = False
-    , async      = False
-    , targetFile = "Eq.yml"
+    { async       = False
+    , showVersion = False
+    , targetFile  = "Eq.yml"
     }

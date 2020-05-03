@@ -23,6 +23,9 @@ parseOptions args =
   where
     header = "Usage: sae [OPTION...] formulas..."
 
+version :: String
+version = "v0.3a"
+
 run :: IO ()
 run = do
     args <- getArgs
