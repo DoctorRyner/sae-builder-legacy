@@ -7,7 +7,7 @@ data Flag
     deriving Show
 
 data Options = Options
-    { version    :: Bool
+    { version
     , async      :: Bool
     , targetFile :: FilePath
     }
