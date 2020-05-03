@@ -11,3 +11,10 @@ data Options = Options
     , async      :: Bool
     , targetFile :: FilePath
     }
+
+defaultOptions :: Options
+defaultOptions = Options
+    { version    = False
+    , async      = False
+    , targetFile = "Eq.yml"
+    }
