@@ -6,6 +6,8 @@ description:         Please see the README on GitHub at <https://github.com/Doct
 dependencies:
 - base >= 4.7 && < 5
 - generic-lens
+- yaml
+- bytestring
 
 ghc-options:
 - -Wall
