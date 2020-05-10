@@ -3,7 +3,21 @@
 # For more information, please see the documentation at:
 #   https://docs.haskellstack.org/en/stable/lock_files
 
-packages: []
+packages:
+- completed:
+    cabal-file:
+      size: 809
+      sha256: 029229874b1b393c152741c7ff25fa086ab8827f3e2139123f57d7fc3e7ea757
+    name: colored-cli
+    version: 0.0.0
+    git: https://github.com/DoctorRyner/colored-cli
+    pantry-tree:
+      size: 502
+      sha256: 0137139398653c4f9994862bbe53796edfb554c538fdc968698814b7bb2c3506
+    commit: ef576f4a5604367dff0758fc045b808fcc4bf1c3
+  original:
+    git: https://github.com/DoctorRyner/colored-cli
+    commit: ef576f4a5604367dff0758fc045b808fcc4bf1c3
 snapshots:
 - completed:
     size: 492027

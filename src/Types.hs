@@ -4,13 +4,17 @@ import Lens
 
 data Options = Options
     { async
-    , showVersion :: Bool
-    , targetFile  :: FilePath
+    , showVersion
+    , fromMakefile
+    , toMakefile   :: Bool
+    , targetFile   :: FilePath
     } deriving (Show, Generic)
 
 defaultOptions :: Options
 defaultOptions = Options
-    { async       = False
-    , showVersion = False
-    , targetFile  = "Eq.yml"
+    { async        = False
+    , showVersion  = False
+    , fromMakefile = False
+    , toMakefile   = False
+    , targetFile   = "Eq.yml"
     }

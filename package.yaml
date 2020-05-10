@@ -8,6 +8,7 @@ dependencies:
 - generic-lens
 - yaml
 - bytestring
+- colored-cli
 
 ghc-options:
 - -Wall

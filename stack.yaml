@@ -3,7 +3,6 @@ resolver: lts-15.9
 packages:
 - .
 
-# extra-deps:
-# - acme-missiles-0.3
-# - git: https://github.com/commercialhaskell/stack.git
-#   commit: e7b331f14bcffb8367cd58fbfc8b40ec7642100a
+extra-deps:
+- git: https://github.com/DoctorRyner/colored-cli
+  commit: ef576f4a5604367dff0758fc045b808fcc4bf1c3
