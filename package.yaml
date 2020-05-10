@@ -9,6 +9,7 @@ dependencies:
 - yaml
 - bytestring
 - colored-cli
+- unordered-containers
 
 ghc-options:
 - -Wall

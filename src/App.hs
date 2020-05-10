@@ -9,6 +9,8 @@ import System.Environment
 
 import Cli.Options as Options
 import Handler
+import Data.Yaml
+import Lens
 
 parseOptions :: [String] -> IO (Options, [String])
 parseOptions argv =
@@ -22,8 +24,10 @@ run = do
 
     (opts, _formulas) <- parseOptions args
 
-    -- file :: Value <- decodeFileThrow $ opts ^. #targetFile
+    file :: Value <- decodeFileThrow $ opts ^. #targetFile
+
+    print file
 
     putStrLn "#green(Running SAE ...)"
 
-    handler opts
+    handler opts file
