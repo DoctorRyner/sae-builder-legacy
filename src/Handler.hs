@@ -41,10 +41,17 @@ yamlProcessor = \case
 
   where
     checkArray :: Object -> Either String [String]
-    checkArray vObj =
-        map (x -> x) obj
-            -- [String xs] -> Right ["No, fuck you"]
-            -- _          -> Left  "Fuck you"
+    checkArray obj =
+
+        if length val == length cval && length val > 0
+            then Right cval
+            else Left "Err"
 
       where
-        obj = H.elems vObj
+        val  = H.elems obj
+        cval =
+            mapMaybe
+                (\v -> case v of
+                    String x -> Just $ show x
+                    _        -> Nothing
+                ) val
