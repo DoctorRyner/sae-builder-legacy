@@ -11,18 +11,21 @@ import Cli.Options as Options
 import Handler
 import Data.Yaml
 import Lens
+import qualified Data.Text as T
 
-parseOptions :: [String] -> IO (Options, [String])
+parseOptions :: [String] -> IO (Options, [T.Text])
 parseOptions argv =
     case getOpt Permute options argv of
-        (flags, otherArgs,   []) -> pure (foldl (flip id) defaultOptions flags, otherArgs)
+        (flags, otherArgs,   []) -> pure (foldl (flip id) defaultOptions flags, T.pack <$> otherArgs)
         (_    , _        , errs) -> fail $ concat errs ++ usageInfo Options.header options
 
 run :: IO ()
 run = do
     args <- getArgs
 
-    (opts, _formulas) <- parseOptions args
+    -- putStrLn $ "!!!!!!!!!!!!!!!!!!!!!!!!" ++ (show args)
+
+    (opts, formulas) <- parseOptions args
 
     file :: Value <- decodeFileThrow $ opts ^. #targetFile
 
@@ -30,4 +33,4 @@ run = do
 
     putStrLn "#green(Running SAE ...)"
 
-    handler opts file
+    handler opts file formulas

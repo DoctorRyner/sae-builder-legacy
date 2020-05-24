@@ -1,3 +1,9 @@
 da: mom spagetti
 
-nyet: gravity squeze
+a: |
+  echo "lol kek smek"
+  echo "nea"
+  echo "da"
+  echo "pew-pew"
+
+test: stack ghci

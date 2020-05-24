@@ -5,6 +5,8 @@ import CLI.Colored (putStrLn)
 
 import Control.Monad
 import Data.Maybe
+import qualified Data.Text          as T
+import System.Process
 
 import Config
 import Lens
@@ -12,15 +14,15 @@ import Types
 import Data.Yaml
 import qualified Data.HashMap.Strict as H
 
-withColor :: String -> String -> String
-withColor color str = concat ["#", color, "(" ++ str ++ ")"]
+-- withColor :: String -> String -> T.Text
+-- withColor color str = T.concat ["#", color, "(" ++ str ++ ")"]
 
-handler :: Options -> Value -> IO ()
-handler opts val = do
+handler :: Options -> Value -> [T.Text] -> IO ()
+handler opts file formulas = do
     when (opts ^. #showVersion) $ putStrLn $ config ^. #version
 
     mapM_
-        (\op -> putStrLn $ withColor "red" $ op ++ " isn't implemented yet"
+        (\op -> putStrLn $ op ++ " isn't implemented yet"
         )
         $ catMaybes
             [ if opts ^. #async then Just "async" else Nothing
@@ -28,19 +30,39 @@ handler opts val = do
             , if opts ^. #fromMakefile then Just "fromMakefile" else Nothing
             ]
 
-    let res = yamlProcessor val
+    let res = yamlProcessor file
 
-    print res
+    printHmap res
 
-    mempty
+    case res of
+        Right r ->
+            mapM_
+                (\formula -> do
+                    let fres = H.lookup formula r
+                    case fres of
+                        Just form -> callCommand $ T.unpack form
+                        Nothing   -> print $ "No such formula: " <> formula
+                ) formulas
 
-yamlProcessor :: Value -> Either String [String]
+        Left  e -> print e
+
+printHmap :: Either T.Text (H.HashMap T.Text T.Text) -> IO ()
+printHmap hmap =
+    case hmap of
+        Right r -> mapM_
+            (\(k, v) ->
+                putStrLn $ "key: " ++ show k
+                      ++ "| val: " ++ show v
+            ) (H.toList r)
+        Left  e -> print e
+
+yamlProcessor :: Value -> Either T.Text (H.HashMap T.Text T.Text)
 yamlProcessor = \case
     Object val -> checkArray val
     _          -> Left "Naegoril na value)00)"
 
   where
-    checkArray :: Object -> Either String [String]
+    checkArray :: Object -> Either T.Text (H.HashMap T.Text T.Text)
     checkArray obj =
 
         if length val == length cval && length val > 0
@@ -48,10 +70,10 @@ yamlProcessor = \case
             else Left "Err"
 
       where
-        val  = H.elems obj
+        val  = obj
         cval =
-            mapMaybe
+            H.mapMaybe
                 (\v -> case v of
-                    String x -> Just $ show x
+                    String x -> Just (x)
                     _        -> Nothing
                 ) val
