@@ -59,7 +59,7 @@ printHmap hmap =
 yamlProcessor :: Value -> Either T.Text (H.HashMap T.Text T.Text)
 yamlProcessor = \case
     Object val -> checkArray val
-    _          -> Left "Naegoril na value)00)"
+    _          -> Left "Wrong file content, Object/HashMap expected"
 
   where
     checkArray :: Object -> Either T.Text (H.HashMap T.Text T.Text)

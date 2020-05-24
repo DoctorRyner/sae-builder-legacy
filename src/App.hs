@@ -23,8 +23,6 @@ run :: IO ()
 run = do
     args <- getArgs
 
-    -- putStrLn $ "!!!!!!!!!!!!!!!!!!!!!!!!" ++ (show args)
-
     (opts, formulas) <- parseOptions args
 
     file :: Value <- decodeFileThrow $ opts ^. #targetFile
