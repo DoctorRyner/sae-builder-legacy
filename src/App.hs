@@ -1,7 +1,6 @@
 module App where
 
-import Prelude hiding (putStrLn)
-import CLI.Colored (putStrLn)
+import Prelude
 
 import System.Console.GetOpt
 import Types
@@ -29,6 +28,8 @@ run = do
 
     print file
 
-    putStrLn "#green(Running SAE ...)"
+    putStrLn "Running SAE ..."
 
     handler opts file formulas
+
+--
